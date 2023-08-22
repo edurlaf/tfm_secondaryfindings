@@ -1,0 +1,3 @@
+[submodule "InterVar"]
+	path = InterVar
+	url = git@github.com:WGLab/InterVar.git
