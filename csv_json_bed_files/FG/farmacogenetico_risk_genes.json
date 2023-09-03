@@ -1,0 +1,727 @@
+{
+    "category": "Hallazgos secundarios de riesgo farmacogenetico",
+    "genes": [
+        {
+            "gene_symbol": "DPYD",
+            "variants": [
+                {
+                    "chromosome": "1",
+                    "position": "97544627",
+                    "reference": "C",
+                    "alternative": "A",
+                    "dbSNP": "rs1801268"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97547947",
+                    "reference": "T",
+                    "alternative": "A",
+                    "dbSNP": "rs67376798"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97770920",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1801160"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97915614",
+                    "reference": "C",
+                    "alternative": "G,T",
+                    "dbSNP": "rs3918290"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97915621",
+                    "reference": "TG",
+                    "alternative": "T",
+                    "dbSNP": "rs72549303"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97981343",
+                    "reference": "A",
+                    "alternative": "C,T",
+                    "dbSNP": "rs55886062"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97981395",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs1801159"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "97981421",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1801158"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98039419",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs56038477"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98039499",
+                    "reference": "C",
+                    "alternative": "A",
+                    "dbSNP": "rs78060119"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98045449",
+                    "reference": "G",
+                    "alternative": "C,T",
+                    "dbSNP": "rs75017182"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98058994",
+                    "reference": "A",
+                    "alternative": "C,G",
+                    "dbSNP": "rs115349832"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98157332",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs1801266"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98164768",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs6668296"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98165030",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs115232898"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98187048",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs56276561"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98205966",
+                    "reference": "GATGA",
+                    "alternative": "G",
+                    "dbSNP": "rs72549309"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "98348885",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs1801265"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CACNA1S",
+            "variants": [
+                {
+                    "chromosome": "1",
+                    "position": "201029943",
+                    "reference": "C",
+                    "alternative": "A,T",
+                    "dbSNP": "rs1800559"
+                },
+                {
+                    "chromosome": "1",
+                    "position": "201061121",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs772226819"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "UGT1A1",
+            "variants": [
+                {
+                    "chromosome": "2",
+                    "position": "234665659",
+                    "reference": "T",
+                    "alternative": "G",
+                    "dbSNP": "rs4124874"
+                },
+                {
+                    "chromosome": "2",
+                    "position": "234668570",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs887829"
+                },
+                {
+                    "chromosome": "2",
+                    "position": "234668880",
+                    "reference": "A",
+                    "alternative": "AAT",
+                    "dbSNP": "rs3064744"
+                },
+                {
+                    "chromosome": "2",
+                    "position": "234669144",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs4148323"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "TPMT",
+            "variants": [
+                {
+                    "chromosome": "6",
+                    "position": "18130918",
+                    "reference": "T",
+                    "alternative": "C,G",
+                    "dbSNP": "rs1142345"
+                },
+                {
+                    "chromosome": "6",
+                    "position": "18131012",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1800584"
+                },
+                {
+                    "chromosome": "6",
+                    "position": "18139228",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1800460"
+                },
+                {
+                    "chromosome": "6",
+                    "position": "18143955",
+                    "reference": "C",
+                    "alternative": "G",
+                    "dbSNP": "rs1800462"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP3A5",
+            "variants": [
+                {
+                    "chromosome": "7",
+                    "position": "99250393",
+                    "reference": "T",
+                    "alternative": "TA",
+                    "dbSNP": "rs41303343"
+                },
+                {
+                    "chromosome": "7",
+                    "position": "99262835",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs10264272"
+                },
+                {
+                    "chromosome": "7",
+                    "position": "99270539",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs776746"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP3A4",
+            "variants": [
+                {
+                    "chromosome": "7",
+                    "position": "99355806",
+                    "reference": "G",
+                    "alternative": "GT",
+                    "dbSNP": "rs67666821"
+                },
+                {
+                    "chromosome": "7",
+                    "position": "99361466",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs2242480"
+                },
+                {
+                    "chromosome": "7",
+                    "position": "99366316",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs35599367"
+                },
+                {
+                    "chromosome": "7",
+                    "position": "99382096",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs2740574"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP2C19",
+            "variants": [
+                {
+                    "chromosome": "10",
+                    "position": "96521657",
+                    "reference": "C",
+                    "alternative": "A,T",
+                    "dbSNP": "rs12248560"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96522463",
+                    "reference": "A",
+                    "alternative": "G,T",
+                    "dbSNP": "rs28399504"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96535124",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs12769205"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96535173",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs41291556"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96535210",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs72552267"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96540410",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs4986893"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96541616",
+                    "reference": "G",
+                    "alternative": "A,C",
+                    "dbSNP": "rs4244285"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96602623",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs3758581"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96609775",
+                    "reference": "A",
+                    "alternative": "C",
+                    "dbSNP": "rs17886522"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96612495",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs56337013"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP2C9",
+            "variants": [
+                {
+                    "chromosome": "10",
+                    "position": "96702047",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1799853"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96740981",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs28371685"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96741053",
+                    "reference": "A",
+                    "alternative": "C",
+                    "dbSNP": "rs1057910"
+                },
+                {
+                    "chromosome": "10",
+                    "position": "96748777",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs9332239"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "SLCO1B1",
+            "variants": [
+                {
+                    "chromosome": "12",
+                    "position": "21283322",
+                    "reference": "G",
+                    "alternative": "A,C",
+                    "dbSNP": "rs4149015"
+                },
+                {
+                    "chromosome": "12",
+                    "position": "21329738",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs2306283"
+                },
+                {
+                    "chromosome": "12",
+                    "position": "21329813",
+                    "reference": "C",
+                    "alternative": "A",
+                    "dbSNP": "rs11045819"
+                },
+                {
+                    "chromosome": "12",
+                    "position": "21331549",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs4149056"
+                },
+                {
+                    "chromosome": "12",
+                    "position": "21391976",
+                    "reference": "A",
+                    "alternative": "C",
+                    "dbSNP": "rs34671512"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "NUDT15",
+            "variants": [
+                {
+                    "chromosome": "13",
+                    "position": "48611918",
+                    "reference": "AGGAGTC",
+                    "alternative": "A",
+                    "dbSNP": "rs746071566"
+                },
+                {
+                    "chromosome": "13",
+                    "position": "48619855",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs116855232"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "VKORC1",
+            "variants": [
+                {
+                    "chromosome": "16",
+                    "position": "31104878",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs9934438"
+                },
+                {
+                    "chromosome": "16",
+                    "position": "31107689",
+                    "reference": "C",
+                    "alternative": "A,G,T",
+                    "dbSNP": "rs9923231"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP4F2",
+            "variants": [
+                {
+                    "chromosome": "19",
+                    "position": "15990431",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs2108622"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "16008388",
+                    "reference": "A",
+                    "alternative": "C",
+                    "dbSNP": "rs3093105"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "RYR1",
+            "variants": [
+                {
+                    "chromosome": "19",
+                    "position": "38939352",
+                    "reference": "G",
+                    "alternative": "A,C",
+                    "dbSNP": "rs121918592"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "38948185",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs118192172"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "38985219",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs118192176"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "38990633",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs121918593"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP2B6",
+            "variants": [
+                {
+                    "chromosome": "19",
+                    "position": "41497129",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs34223104"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "41497274",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs8192709"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "41512841",
+                    "reference": "G",
+                    "alternative": "A,T",
+                    "dbSNP": "rs3745274"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "41515263",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs2279343"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "41518221",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs28399499"
+                },
+                {
+                    "chromosome": "19",
+                    "position": "41522715",
+                    "reference": "C",
+                    "alternative": "A,G,T",
+                    "dbSNP": "rs3211371"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "CYP2D6",
+            "variants": [
+                {
+                    "chromosome": "22",
+                    "position": "42522613",
+                    "reference": "G",
+                    "alternative": "C",
+                    "dbSNP": "rs1135840"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42522749",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs730882251"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42522751",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs267608319"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42523610",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs59421388"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42523805",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs28371725"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42523943",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs16947"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42524175",
+                    "reference": "CCTT",
+                    "alternative": "C",
+                    "dbSNP": "rs5030656"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42524243",
+                    "reference": "CT",
+                    "alternative": "C",
+                    "dbSNP": "rs35742686"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42524814",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs199535154"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42524816",
+                    "reference": "T",
+                    "alternative": "TC",
+                    "dbSNP": "rs72549354"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42524947",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs3892097"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42525085",
+                    "reference": "CA",
+                    "alternative": "C",
+                    "dbSNP": "rs5030655"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42525134",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs61736512"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42525772",
+                    "reference": "G",
+                    "alternative": "A,T",
+                    "dbSNP": "rs28371706"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42526694",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs1065852"
+                },
+                {
+                    "chromosome": "22",
+                    "position": "42526763",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs769258"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "G6PD",
+            "variants": [
+                {
+                    "chromosome": "X",
+                    "position": "153762634",
+                    "reference": "G",
+                    "alternative": "A",
+                    "dbSNP": "rs5030868"
+                },
+                {
+                    "chromosome": "X",
+                    "position": "153764217",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs1050828"
+                }
+            ]
+        },
+        {
+            "gene_symbol": "MT-RNR1",
+            "variants": [
+                {
+                    "chromosome": "MT",
+                    "position": "1095",
+                    "reference": "T",
+                    "alternative": "C",
+                    "dbSNP": "rs267606618"
+                },
+                {
+                    "chromosome": "MT",
+                    "position": "1494",
+                    "reference": "C",
+                    "alternative": "T",
+                    "dbSNP": "rs267606619"
+                },
+                {
+                    "chromosome": "MT",
+                    "position": "1555",
+                    "reference": "A",
+                    "alternative": "G",
+                    "dbSNP": "rs267606617"
+                }
+            ]
+        }
+    ]
+}

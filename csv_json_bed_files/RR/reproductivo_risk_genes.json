@@ -1,0 +1,683 @@
+{
+    "category": "Hallazgos secundarios de riesgo reproductivo",
+    "genes": [
+        {
+            "gene_symbol": "HBB",
+            "phenotype": "Sickle cell anemia ?-thalassemia",
+            "OMIM_disorder": "603903, 613985",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "XPC",
+            "phenotype": "Xeroderma pigmentosum",
+            "OMIM_disorder": "278720",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "TYR",
+            "phenotype": "Oculocutaneous albinism type 1A and 1B",
+            "OMIM_disorder": "203100, 606952",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CYP21A2",
+            "phenotype": "Congenital adrenal hyperplasia due to 21-hydroxylase deficiency",
+            "OMIM_disorder": "201910",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "PAH",
+            "phenotype": "Phenylketonuria",
+            "OMIM_disorder": "261600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CFTR",
+            "phenotype": "Cystic fibrosis",
+            "OMIM_disorder": "219700",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "TNXB",
+            "phenotype": "Ehlers\u2013Danlos-like syndrome due to tenascin-X deficiency",
+            "OMIM_disorder": "606408",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "HEXA",
+            "phenotype": "Tay\u2013Sachs disease",
+            "OMIM_disorder": "272800",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GJB2",
+            "phenotype": "Nonsyndromic hearing loss recessive 1A; Nonsyndromic hearing loss dominant 3A",
+            "OMIM_disorder": "220290; 601544",
+            "inheritance": "AR; AD"
+        },
+        {
+            "gene_symbol": "DHCR7",
+            "phenotype": "Smith\u2013Lemli\u2013Opitz syndrome",
+            "OMIM_disorder": "270400",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ATP7B",
+            "phenotype": "Wilson disease",
+            "OMIM_disorder": "606882",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ASPA",
+            "phenotype": "Canavan disease",
+            "OMIM_disorder": "271900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ACADM",
+            "phenotype": "Medium-chain acyl-coenzyme A dehydrogenase deficiency",
+            "OMIM_disorder": "201450",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "NPHS1",
+            "phenotype": "Finnish congenital nephrotic syndrome",
+            "OMIM_disorder": "256300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "PMM2",
+            "phenotype": "Carbohydrate-deficient glycoprotein syndrome type Ia",
+            "OMIM_disorder": "212065",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FKTN",
+            "phenotype": "Cardiomyopathy, dilated, 1X; Walker\u2013Warburg congenital muscular dystrophy",
+            "OMIM_disorder": "611615; 253800",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SLC26A4",
+            "phenotype": "Deafness autosomal recessive 4; Pendred syndrome",
+            "OMIM_disorder": "600791; 274600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ERCC2",
+            "phenotype": "Cerebrooculofacioskeletal syndrome 2; Trichothiodystrophy 1, photosensitive",
+            "OMIM_disorder": "610756; 601675",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "DYNC2H1",
+            "phenotype": "Short-rib thoracic dysplasia 3 with or without polydactyly",
+            "OMIM_disorder": "613091",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CEP290",
+            "phenotype": "Joubert syndrome 5; Leber congenital amaurosis 10",
+            "OMIM_disorder": "610188; 611755",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GBE1",
+            "phenotype": "Glycogen storage disease, type IV; GBE1-related disorders",
+            "OMIM_disorder": "232500; 263570",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GAA",
+            "phenotype": "Glycogen storage disease, type II (Pompe disease)",
+            "OMIM_disorder": "232300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CHRNE",
+            "phenotype": "Myasthenic syndrome, congenital, 4A, slow-channel; Myasthenic syndrome, congenital, 4B, fast-channel",
+            "OMIM_disorder": "100725",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "G6PC",
+            "phenotype": "Glycogen storage disease type IA",
+            "OMIM_disorder": "232200",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "OCA2",
+            "phenotype": "Oculocutaneous albinism brown and type II",
+            "OMIM_disorder": "203200",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "COL7A1",
+            "phenotype": "Recessive dystrophic epidermolysis bullosa",
+            "OMIM_disorder": "226600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ABCC8",
+            "phenotype": "Diabetes mellitus, permanent neonatal 3",
+            "OMIM_disorder": "618857",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ALDOB",
+            "phenotype": "Hereditary fructosuria",
+            "OMIM_disorder": "229600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FANCC",
+            "phenotype": "Fanconi anemia, complementation group C",
+            "OMIM_disorder": "227645",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GRIP1",
+            "phenotype": "Fraser syndrome",
+            "OMIM_disorder": "617667",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "BCKDHB",
+            "phenotype": "Maple syrup urine disease",
+            "OMIM_disorder": "245600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ANO10",
+            "phenotype": "Spinocerebellar ataxia 10",
+            "OMIM_disorder": "613728",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "NAGA",
+            "phenotype": "Schindler disease, type 1; Schindler disease, type 3",
+            "OMIM_disorder": "609241",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SMPD1",
+            "phenotype": "Niemann\u2013Pick disease, type A; Niemann\u2013Pick disease, type B",
+            "OMIM_disorder": "257200; 607616",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "USH2A",
+            "phenotype": "Usher syndrome, type 2A",
+            "OMIM_disorder": "276901",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MMUT",
+            "phenotype": "Methylmalonic aciduria\u2013methylmalonyl\u2013CoA mutase deficiency",
+            "OMIM_disorder": "251000",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CPT2",
+            "phenotype": "Carnitine palmitoyltransferase II deficiency, infantile; Carnitine palmitoyltransferase II deficiency, lethal neonatal",
+            "OMIM_disorder": "600649; 608836",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "AHI1",
+            "phenotype": "Joubert syndrome 3",
+            "OMIM_disorder": "608629",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "DHDDS",
+            "phenotype": "Congenital disorder of glycosylation type 1, Retinitis pigmentosa 59",
+            "OMIM_disorder": "613861",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SLC19A3",
+            "phenotype": "Basal ganglia disease, biotin-responsive",
+            "OMIM_disorder": "607483",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GALT",
+            "phenotype": "Galactosemia",
+            "OMIM_disorder": "230400",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CYP11A1",
+            "phenotype": "Adrenal insufficiency, congenital, with 46, XY sex reversal, partial or complete",
+            "OMIM_disorder": "613743",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "TF",
+            "phenotype": "Atransferrinemia",
+            "OMIM_disorder": "209300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MMACHC",
+            "phenotype": "Methylmalonic aciduria with homocystinuria cblC type",
+            "OMIM_disorder": "277400",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ABCA3",
+            "phenotype": "Surfactant metabolism dysfunction, pulmonary 3",
+            "OMIM_disorder": "610921",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GBA",
+            "phenotype": "Gaucher disease, type I; Gaucher disease, type II",
+            "OMIM_disorder": "230800; 230900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MCOLN1",
+            "phenotype": "Mucolipidosis type IV",
+            "OMIM_disorder": "252650",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "GNPTAB",
+            "phenotype": "Mucolipidosis type II alpha/beta; Mucolipidosis type III alpha/beta",
+            "OMIM_disorder": "252500; 252600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "AGA",
+            "phenotype": "Aspartylglucosaminuria",
+            "OMIM_disorder": "208400",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "PCDH15",
+            "phenotype": "Deafness, autosomal recessive 23; Usher syndrome, type 1F",
+            "OMIM_disorder": "609533; 602083",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FAH",
+            "phenotype": "Tyrosinemia type I",
+            "OMIM_disorder": "276700",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "AIRE",
+            "phenotype": "Autoimmune polyendocrinopathy syndrome type I",
+            "OMIM_disorder": "240300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "BBS2",
+            "phenotype": "Bardet\u2013Biedl syndrome 2; Retinitis pigmentosa 74",
+            "OMIM_disorder": "615981; 616562",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CYP27A1",
+            "phenotype": "Cerebrotendinous xanthomatosis",
+            "OMIM_disorder": "213700",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CCDC88C",
+            "phenotype": "Congenital hydrocephalus 1",
+            "OMIM_disorder": "236600",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FMO3",
+            "phenotype": "Trimethylaminuria",
+            "OMIM_disorder": "602079",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "TMEM216",
+            "phenotype": "Joubert syndrome 2; Meckel syndrome 2",
+            "OMIM_disorder": "608091; 603194",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CNGB3",
+            "phenotype": "Achromatopsia 3",
+            "OMIM_disorder": "262300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MCPH1",
+            "phenotype": "Primary microcephaly 1, recessive",
+            "OMIM_disorder": "651200",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SLC37A4",
+            "phenotype": "Glycogen storage disease Ib; Glycogen storage disease Ic",
+            "OMIM_disorder": "232220; 232240",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "PRF1",
+            "phenotype": "Hemophagocytic lymphohistiocytosis, familial, 2",
+            "OMIM_disorder": "603553",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SCO2",
+            "phenotype": "Mitochondrial complex IV deficiency, nuclear type 2",
+            "OMIM_disorder": "604377",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "AGXT",
+            "phenotype": "Hyperoxaluria, primary type I",
+            "OMIM_disorder": "259900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ACADVL",
+            "phenotype": "Very long chain acyl-CoA dehydrogenase deficiency",
+            "OMIM_disorder": "201475",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ASL",
+            "phenotype": "Argininosuccinate aciduria",
+            "OMIM_disorder": "207900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "EVC2",
+            "phenotype": "Chondroectodermal dysplasia",
+            "OMIM_disorder": "225500",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ARSA",
+            "phenotype": "Metachromatic leukodystrophy",
+            "OMIM_disorder": "250100",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MVK",
+            "phenotype": "Hyper-IgD syndrome; Mevalonic aciduria",
+            "OMIM_disorder": "260920; 610377",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "PKHD1",
+            "phenotype": "Autosomal recessive polycystic kidney disease",
+            "OMIM_disorder": "263200",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "BTD",
+            "phenotype": "Biotinidase deficiency",
+            "OMIM_disorder": "253260",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ALPL",
+            "phenotype": "Hypophosphatasia, adult; Hypophosphatasia, childhood and infantile",
+            "OMIM_disorder": "146300; 241510",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "BBS1",
+            "phenotype": "Bardet\u2013Biedl syndrome 1",
+            "OMIM_disorder": "209900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CLCN1",
+            "phenotype": "Congenital myotonia, autosomal recessive form",
+            "OMIM_disorder": "255700",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CYP27B1",
+            "phenotype": "Vitamin D\u2013dependent rickets, type 1",
+            "OMIM_disorder": "264700",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "POLG",
+            "phenotype": "Mitochondrial DNA depletion syndrome 4A; Mitochondrial DNA depletion syndrome 4B",
+            "OMIM_disorder": "203700; 613662",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MCCC2",
+            "phenotype": "3-methylcrotonyl CoA carboxylase 2 deficiency",
+            "OMIM_disorder": "210210",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "MLC1",
+            "phenotype": "Megalencephalic leukoencephalopathy with subcortical cysts",
+            "OMIM_disorder": "604004",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ACAT1",
+            "phenotype": "?-Methylacetoacetic aciduria",
+            "OMIM_disorder": "203750",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CC2D2A",
+            "phenotype": "Joubert syndrome 9; Meckel syndrome 6",
+            "OMIM_disorder": "612285; 612284",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SLC26A2",
+            "phenotype": "Epiphyseal dysplasia, multiple, 4; Achondrogenesis Ib",
+            "OMIM_disorder": "226900; 600972",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CBS",
+            "phenotype": "Homocystinuria, B6 responsive and nonresponsive",
+            "OMIM_disorder": "236200",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "LRP2",
+            "phenotype": "Donnai\u2013Barrow syndrome",
+            "OMIM_disorder": "222448",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "IDUA",
+            "phenotype": "Mucopolysaccharidosis, Ih (Hurler S); Mucopolysaccharidosis, Ih/s (Hurler\u2013Scheie S)",
+            "OMIM_disorder": "607014; 607015",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FKRP",
+            "phenotype": "Muscular dystrophy\u2013dystroglycanopathy, type A, 5; Muscular dystrophy\u2013dystroglycanopathy, type B, 5",
+            "OMIM_disorder": "613153; 606612",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "RNASEH2B",
+            "phenotype": "Aicardi Goutieres syndrome 2",
+            "OMIM_disorder": "610181",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "RARS2",
+            "phenotype": "Pontocerebellar hypoplasia type 6",
+            "OMIM_disorder": "611523",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "FXN",
+            "phenotype": "Friedreich ataxia",
+            "OMIM_disorder": "229300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "SMN1",
+            "phenotype": "Spinal muscular",
+            "OMIM_disorder": "253300, 253550; 253400, 271150",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ABCD1",
+            "phenotype": "Adrenoleukodystrophy (ALD)",
+            "OMIM_disorder": "300100",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "AFF2",
+            "phenotype": "Mental retardation, X-linked, associated with fragile site FRAXE",
+            "OMIM_disorder": "309548",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "ARX",
+            "phenotype": "Developmental and epileptic encephalopathy 1 (DEE1)",
+            "OMIM_disorder": "308350",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "DMD",
+            "phenotype": "Muscular dystrophy, Becker type (BMD); Muscular dystrophy, Duchenne type (DMD)",
+            "OMIM_disorder": "300376; 310200",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "F8",
+            "phenotype": "Hemophilia A (HEMA)",
+            "OMIM_disorder": "300841",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "F9",
+            "phenotype": "Hemophilia B (HEMB)",
+            "OMIM_disorder": "306900",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "FMR1",
+            "phenotype": "Fragile X syndrome (FXS)",
+            "OMIM_disorder": "300624",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "GLA",
+            "phenotype": "Fabry disease",
+            "OMIM_disorder": "301500",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "L1CAM",
+            "phenotype": "Hydrocephalus due to congenital stenosis of aqueduct of Sylvius (HSAS)",
+            "OMIM_disorder": "307000",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "MID1",
+            "phenotype": "Opitz GBBB syndrome, type I (GBBB1)",
+            "OMIM_disorder": "300000",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "NR0B1",
+            "phenotype": "Adrenal hypoplasia, congenital (AHC)",
+            "OMIM_disorder": "300200",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "OTC",
+            "phenotype": "Ornithine transcarbamylase deficiency",
+            "OMIM_disorder": "311250",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "PLP1",
+            "phenotype": "Spastic paraplegia 2, X-linked (SPG2)",
+            "OMIM_disorder": "312920",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "RPGR",
+            "phenotype": "Retinitis pigmentosa 3 (RP3; RP); Retinitis pigmentosa, X-linked, and sinorespiratory; Infections, with or without deafness; Macular degeneration, X-linked atrophic",
+            "OMIM_disorder": "300029; 300455; 300834",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "RS1",
+            "phenotype": "Retinoschisis 1, X-linked, juvenile (RS1)",
+            "OMIM_disorder": "312700",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "SLC6A8",
+            "phenotype": "Cerebral creatine deficiency syndrome 1 (CCDS1)",
+            "OMIM_disorder": "300352",
+            "inheritance": "XL"
+        },
+        {
+            "gene_symbol": "HBA1",
+            "phenotype": "?-Thalassemia",
+            "OMIM_disorder": "604131",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "HBA2",
+            "phenotype": "?-Thalassemia",
+            "OMIM_disorder": "604131",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "HPS1",
+            "phenotype": "Hermansky Pudlak S. 1",
+            "OMIM_disorder": "203300",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "HPS3",
+            "phenotype": "Hermansky Pudlak S. 3",
+            "OMIM_disorder": "614072",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "ELP1",
+            "phenotype": "Familial dysautonomia",
+            "OMIM_disorder": "223900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "DLD",
+            "phenotype": "Dihydrolipoamide dehydrogenase deficiency",
+            "OMIM_disorder": "246900",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "NEB",
+            "phenotype": "Nemaline myopathy 2",
+            "OMIM_disorder": "256030",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "CLRN1",
+            "phenotype": "Usher syndrome 3a",
+            "OMIM_disorder": "276902",
+            "inheritance": "AR"
+        },
+        {
+            "gene_symbol": "BLM",
+            "phenotype": "Bloom syndrome",
+            "OMIM_disorder": "210900",
+            "inheritance": "AR"
+        }
+    ]
+}
