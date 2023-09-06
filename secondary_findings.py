@@ -35,7 +35,7 @@ def main():
     out_path = args.outpath
     mode = args.mode
     evidence = args.evidence
-    assembly = args.assembly
+    assembly = args.assembly.lower()
     
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
     categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ")
