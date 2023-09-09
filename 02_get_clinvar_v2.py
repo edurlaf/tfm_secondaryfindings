@@ -9,6 +9,7 @@ import gzip
 import csv
 import urllib.request
 from datetime import datetime
+import shutil
 
 def process_clinvar_data(assembly, release_date):
     """
@@ -42,13 +43,19 @@ def process_clinvar_data(assembly, release_date):
         header_line = gz_file.readline().strip()
         header_fields = header_line.split("\t")
         columns_of_interest_positions = [header_fields.index(col) for col in columns_of_interest_names]
+        
+        # Find the index of the "Assembly" column
+        for idx, field in enumerate(header_fields):
+            if field == "Assembly":
+                assembly_column_index = idx
+                break
     
         # Agregar las columnas de interés al archivo de salida
         csv_writer.writerow(columns_of_interest_names)
     
         for line in gz_file:
             row = line.strip().split("\t")
-            if row[8] == assembly:  # Filtro por ensamblaje (GRCh37 o GRCh38)
+            if row[assembly_column_index] == assembly:  # Filtro por ensamblaje (GRCh37 o GRCh38)
                 relevant_fields = [row[pos] for pos in columns_of_interest_positions]
                 csv_writer.writerow(relevant_fields)
     
@@ -62,13 +69,20 @@ def get_clinvar():
         # URL del archivo CLINVAR
         clinvar_url = "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz"
         
-        # Descargar el archivo CLINVAR
+        # Abrir la URL
         response = urllib.request.urlopen(clinvar_url)
 
-        # Verificar si la descarga fue exitosa (código de estado HTTP 200)
+        # Verificar si la respuesta fue exitosa (código de estado HTTP 200)
         if response.status != 200:
             print(f"Error al descargar el archivo CLINVAR. Código de estado HTTP: {response.status}")
             return
+        
+        # Open a local file for writing in binary mode
+        out_rawfile = "./variant_summary.txt.gz"
+        with open(out_rawfile, 'wb') as output_file:
+            # Copy the response content to the local file
+            shutil.copyfileobj(response, output_file)
+        print(f"File downloaded to {out_rawfile}")
         
         # Obtener la fecha de release del archivo CLINVAR desde la URL
         last_modified = response.headers['Last-Modified']
