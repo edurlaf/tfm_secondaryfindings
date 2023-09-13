@@ -108,6 +108,11 @@ def main():
     """
     norm_vcf = normalize_vcf(vcf_file)
     
+    """
+    Realizar la intersección con los archivos BED
+    """
+    for category in categories:
+        intersect_vcf_bed(norm_vcf, category, assembly)
     
     """
     Ejecutar los módulos que correspondan:
