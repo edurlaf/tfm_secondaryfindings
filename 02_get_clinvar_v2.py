@@ -32,7 +32,7 @@ def process_clinvar_data(assembly, release_date):
                                  "PhenotypeIDS", "PhenotypeList", "Assembly", 
                                  "Chromosome", "Start", "Stop", "ReviewStatus", 
                                  "SubmitterCategories", "PositionVCF", 
-                                 "ReferenceAlleleVCF", "AlternateAllele"]
+                                 "ReferenceAlleleVCF", "AlternateAlleleVCF"]
     
     # Nombre del archivo de salida
     output_file = f"clinvar_database_{assembly}_{release_date.strftime('%Y%m%d')}.txt"
