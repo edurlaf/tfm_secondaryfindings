@@ -127,70 +127,7 @@ def check_inheritance(results, genes_cat):
                                 reported_variants[other_variant_key] = other_combined_info
     return(reported_variants)     
 
-        
-def read_output(infile):
-    for line in open(infile):
-        line = line.rstrip()
-        
-        # Saltar header
-        if line[0] == "#":
-            header_fields = line.split('\t')
-            continue
-        
-        fields = line.split('\t')
-        # gene
-        gene = fields[5].upper()
-        # clacsificación ACMG
-        if fields[13].split(' ')[2].lower() == 'likely':
-            clasif = 'likely ' + fields[13].split(' ')[3].lower()
-        else:
-            clasif = fields[13].split(' ')[2].lower()
-        print(gene + ' ' + clasif)
-        
-        # Si la clasificación es pathogenic o likely pathogenic
-        if clasif == 'pathogenic' or clasif == 'likely pathogenic':
-            inher = check_inheritance(gene, pr_gene_cat)
-            
-            # Si herencia es dominante (AD) ### todo esto está sin temrinar
-            if inher == 'AD' or inher == 'SD':
-                "variants_to_report": "All P and LP"
-            elif inher == 'AR':
-                if gene = 'HFE':
-                    "variants_to_report": "HFE p.C282Yl\n homozygotes only"
-                else:
-                    "variants_to_report": "P and LP (2 variants)"  
-                    # Verificar si existen otras variantes en el mismo gen en el VCF
-                    otras_variantes = [v for v in vcf_data if v['gene'] == gene_name and v != variante]
-                    if otras_variantes:
-                        return f"Variante de herencia Recesiva con otras variantes en el mismo gen"
-                    # Verificar si genotipo es homocigoto mutado
                 
-            elif inher == 'XL':
-                "variants_to_report": "All hemi, het, homozygous P and LP"
-                
-def write_report(pr_results, rr_results, fg_results, out_path):
-    # Crear un escritor de Excel
-    writer = pd.ExcelWriter(out_path, engine='xlsxwriter')
-
-    # Escribe los resultados de cada categoría en hojas separadas
-    pr_df = pd.DataFrame(pr_results)
-    pr_df.to_excel(writer, sheet_name='PR Results', index=False)
-
-    rr_df = pd.DataFrame(rr_results)
-    rr_df.to_excel(writer, sheet_name='RR Results', index=False)
-
-    fg_df = pd.DataFrame(fg_results)
-    fg_df.to_excel(writer, sheet_name='FG Results', index=False)
-
-    # Verifica la herencia para la categoría "pr" y agrega una columna "Herencia"
-    if "PR Results" in writer.sheets:
-        pr_sheet = writer.sheets["PR Results"]
-        pr_sheet.set_column('H:H', 20)  # Ajusta el ancho de la columna para "Herencia"
-        pr_df["Herencia"] = pr_df.apply(check_inheritance, axis=1)
-        pr_df.to_excel(writer, sheet_name='PR Results', index=False)
-
-    # Guarda el archivo Excel
-    writer.save()
     
 def write_report(pr_results, rr_results, fg_results, out_path):
     # Crear un escritor de Excel
