@@ -31,15 +31,21 @@ def normalize_vcf_with_bcftools(input_vcf_path):
             #os.system(index_command)
             index_command = ["bcftools", "index", input_vcf_path]
             subprocess.run(index_command, check=True)
-      
+        
+        #bcftools annotate --rename-chrs chrmap.txt input_vcf_example/NM769.01.hard-filtered.vcf -O v -o input_vcf_example/NM769.01.hard-filtered_renamed.vcf
+        
+        
         # Comando para normalizar con bcftools
         #bcftools_command = f"bcftools norm -Ov -o {output_vcf_path} {input_vcf_path}"
-        bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-", "-o", output_vcf_path, input_vcf_path]
-        
+        bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-", "--check-ref", "w", "-f", "/home/sagarruxki/GRCh37_latest_genomic.fna", "-o", output_vcf_path, input_vcf_path]
+        #falta el remove duplicates!!!!
         # # Ejecutar el comando utilizando os.system
         # os.system(bcftools_command)
         # Ejecutar el comando utilizando subprocess
         subprocess.run(bcftools_command, check=True)
+        
+        #bcftools annotate --rename-chrs chrmap_rev.txt input_vcf_example/NM769.01.hard-filtered_normalized.vcf -O v -o input_vcf_example/NM769.01.hard-filtered_normalized_renamed.vcf
+
 
         print("Normalización con bcftools completada.")
     except Exception as e:
