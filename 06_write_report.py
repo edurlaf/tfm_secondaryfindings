@@ -130,16 +130,16 @@ def check_inheritance(results, genes_cat):
                 
     
 def write_report(pr_results, rr_results, fg_results, out_path):
-    # Crear un escritor de Excel
-    writer = pd.ExcelWriter(out_path, engine='xlsxwriter')
+    # # Crear un escritor de Excel
+    # writer = pd.ExcelWriter(out_path, engine='xlsxwriter')
     
     for category in categories:
         if category == 'PR':
             pr_reported_results = check_inheritance(pr_results, gene_cat)
             pr_final = check_diagnosis(pr_reported_results)
             pr_df =  pd.DataFrame.from_dict(pr_reported_results, orient='index')
-            pr_df = dict_to_df_results
-            pr_df.to_excel(writer, sheet_name='PR Results', index=False)
+            #pr_df.to_excel(writer, sheet_name='PR Results', index=True)
+            pr_df.to_excel(out_path, sheet_name='PR Results', index=True)
             
         elif category == 'RR':
             rr_results = check_inheritance(rr_results)
