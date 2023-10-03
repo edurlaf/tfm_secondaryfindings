@@ -44,7 +44,7 @@ def run_intervar(vcf_path, output_file, category, assembly):
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar InterVar: {e.output}")
         
-def process_intervar_output(vcf_path, category):
+def parse_intervar_output(vcf_path, category):
     """
     Procesa el archivo de salida de InterVar y extrae los campos necesarios.
 
@@ -57,6 +57,7 @@ def process_intervar_output(vcf_path, category):
     
     #intervar_output_file = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
     intervar_output_file = "/home/sagarruxki/input_vcf_example/NM769.01_pr.hg19_multianno.txt - copia.intervar" #arreglar
+    #intervar_output_file = vcf_path.split('hard-filtered')[0] + '.hg19_multianno.txt.intervar'
     intervar_results = {}
     
     with open(intervar_output_file, "r") as intervar_file:
@@ -346,27 +347,27 @@ def write_combined_results_to_tsv(combined_results, output_tsv):
     
     
     
-    with open(output_tsv, "w", newline="") as tsv_file:
-        fieldnames = [
-            "Category",
-            "Variant",
-            "Gene",
-            "Genotype",
-            "rs",
-            "IntervarClassification",
-            "ClinvarClinicalSignificance",
-            "ReviewStatus",
-            "ClinvarID",
-            "Orpha"
-        ]
-        writer = csv.DictWriter(tsv_file, fieldnames=fieldnames, delimiter="\t")
+    # with open(output_tsv, "w", newline="") as tsv_file:
+    #     fieldnames = [
+    #         "Category",
+    #         "Variant",
+    #         "Gene",
+    #         "Genotype",
+    #         "rs",
+    #         "IntervarClassification",
+    #         "ClinvarClinicalSignificance",
+    #         "ReviewStatus",
+    #         "ClinvarID",
+    #         "Orpha"
+    #     ]
+    #     writer = csv.DictWriter(tsv_file, fieldnames=fieldnames, delimiter="\t")
         
-        # Escribir la fila de encabezado
-        writer.writeheader()
+    #     # Escribir la fila de encabezado
+    #     writer.writeheader()
         
-        # Escribir los resultados combinados
-        for result in combined_results:
-            writer.writerow(result)
+    #     # Escribir los resultados combinados
+    #     for result in combined_results:
+    #         writer.writerow(result)
 
  
         
@@ -384,15 +385,15 @@ def run_personal_risk_module(vcf_path, assembly, mode, evidence_level, category,
         category (str): Categoría de genes para la anotación.
     """
     if mode == "basic":
-        run_intervar(vcf_path, output_dir, category)
-        intervar_results = process_intervar_output(output_dir)
+        run_intervar(vcf_path, output_dir, category, assembly)
+        intervar_results = parse_intervar_output(output_dir, category)
         return(intervar_results)
         #check_inheritance()
     elif mode == "advanced":
-        run_intervar(vcf_path, output_file, category, assembly)
-        intervar_results = process_intervar_output(output_dir)
-        run_clinvar_filtering(vcf_path, evidence_level, clinvar_path)
-        combine_results()
+        run_intervar(vcf_path, output_dir, category, assembly)
+        intervar_results = parse_intervar_output(output_dir, category)
+        clinvar_dct = run_clinvar_filtering(vcf_path, evidence_level, category, clinvar_path)
+        combined_results = combine_results(vcf_path, category, intervar_results, clinvar_dct)
         write_combined_results_to_tsv(combined_results, output_tsv_path)
         return(combined_results)
         #check_inheritance()
