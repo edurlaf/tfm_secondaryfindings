@@ -13,8 +13,8 @@ def intersect_vcf_with_bed(vcf_path, category, assembly):
     
     Args:
         vcf_path (str): Ruta al archivo VCF que se va a intersectar.
-        category (str): Categoría de genes o variantes a utilizar para la intersección (PR, RR o FG).
-        assembly (str): Versión del ensamblaje genómico a utilizar (por ejemplo, "grch38").
+        category (str): Categoría de genes o variantes a utilizar para la intersección (pr, rr o fg).
+        assembly (str): Versión del ensamblaje genómico a utilizar (por ejemplo, "38").
     
     Returns:
         None
@@ -25,9 +25,9 @@ def intersect_vcf_with_bed(vcf_path, category, assembly):
     try:
         # Definir un diccionario de categorías a rutas de archivos BED
         category_to_bed = {
-            "PR": f"personal_genes_{assembly}.bed",
-            "RR": f"reproductivo_genes_{assembly}.bed",
-            "FG": f"farmacogenetico_variants_{assembly}.bed"
+            "pr": f"personal_genes_GRCh{assembly}.bed",
+            "rr": f"reproductivo_genes_GRCh{assembly}.bed",
+            "fg": f"farmacogenetico_variants_GRCh{assembly}.bed"
         }
 
         # Verifica si la categoría es válida

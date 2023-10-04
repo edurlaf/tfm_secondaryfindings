@@ -39,7 +39,7 @@ def main():
     
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
     categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ")
-    categories = categories_usr.split(",")
+    categories = [category.strip().lower() for category in categories_usr.split(",")]
  
     # habría que chequear el outpath?
     
@@ -49,12 +49,12 @@ def main():
     """
     # Comprobar si los archivos JSON existen
     # Catálogo de riesgo personal
-    if not os.path.exists("/home/sagarruxki/personal_risk_genes.json"):
+    if not os.path.exists("/home/sagarruxki/pr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo personal.") # mejor dentro de la función get_json
         get_json_bed("rp", assembly)
         
     # Catálogo de riesgo reproductivo
-    if not os.path.exists("/home/sagarruxki/reproductivo_risk_genes.json"):
+    if not os.path.exists("/home/sagarruxki/rr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo reproductivo.") # mejor dentro de la función get_json
         get_json_bed("rr", assembly)
         
@@ -68,7 +68,7 @@ def main():
     Get ClinVar database
     """
     # Si el modo es avanzado, comprobar si se ha descargado la BD ClinVar
-    if mode == 'avanzado':
+    if mode == 'advanced':
         clinvar_files = [file for file in os.listdir("/home/sagarruxki/") if file.startswith("clinvar_database_")]
         
         # Si hay archivos clinvar, seleccionar el más reciente
@@ -118,17 +118,17 @@ def main():
     Ejecutar los módulos que correspondan:
     """
     # Verificar y ejecutar los módulos elegidos por el usuario
-    if "PR" in categories:
+    if "pr" in categories:
         # Ejecutar el módulo de riesgo personal (PR)
         print("Ejecutando módulo de riesgo personal...")
         pr_results = pr_module(assembly, mode, evidence)
     
-    if "RR" in categories:
+    if "rr" in categories:
         # Ejecutar el módulo de riesgo reproductivo (RR)
         print("Ejecutando módulo de riesgo reproductivo...")
         rr_results = rr_module(assembly, mode, evidence)
         
-    if "FG" in categories:
+    if "fg" in categories:
         # Ejecutar el módulo farmacogenético (FG)
         print("Ejecutando módulo farmacogenético...")
         fg_results = fg_module(assembly)

@@ -59,9 +59,9 @@ def get_gene_pos(gene_symbol, assembly):
     Returns:
         dict: Información de posición del gen.
     """
-    if assembly == "grch37":
+    if assembly == "37":
         server = BiomartServer("http://grch37.ensembl.org/biomart")
-    elif assembly == "grch38":
+    elif assembly == "38":
         server = BiomartServer("http://www.ensembl.org/biomart")
     
     db = server.datasets['hsapiens_gene_ensembl']
@@ -86,7 +86,7 @@ def write_bed_file(assembly, genes_lst, category):
     Escribe información de genes en un archivo BED.
     
     Args:
-        assembly (str): Versión de ensamblaje ("grch37" o "grch38").
+        assembly (str): Versión de ensamblaje ("37" o "38").
         genes_lst (list): Lista de símbolos de genes.
         category (str): Categoría de genes.
     
@@ -96,13 +96,13 @@ def write_bed_file(assembly, genes_lst, category):
     gene_coords = []
     #### Hay genes que cambian de nombre según el genoma de referencia, pensar como generalizar esto
     for gene in genes_lst:
-        if gene == 'MMUT' and assembly == 'grch37':
+        if gene == 'MMUT' and assembly == '37':
             gene = 'MUT'
-        elif gene == 'ELP1' and assembly == 'grch37':
+        elif gene == 'ELP1' and assembly == '37':
             gene = 'IKBKAP'
-        elif gene == 'G6PC' and assembly == 'grch38':
+        elif gene == 'G6PC' and assembly == '38':
             gene = 'G6PC1'
-        elif gene == 'GBA' and assembly == 'grch38':
+        elif gene == 'GBA' and assembly == '38':
             gene = 'GBA1'
         gene_pos = get_gene_pos(gene, assembly)
 
@@ -115,7 +115,7 @@ def write_bed_file(assembly, genes_lst, category):
         gene_coords.append((gene_pos['Chromosome'], int(gene_pos['Start']), int(gene_pos['End']), gene))
     sorted_coords = natsorted(gene_coords)
     
-    filename = f"{category}_genes_{assembly}.bed"
+    filename = f"{category}_genes_grch{assembly}.bed"
     with open(filename, "w") as bed_file:
         for chrom, start, end, gene in sorted_coords:
             bed_file.write(f"{chrom}\t{start}\t{end}\t{gene}\n")
@@ -126,7 +126,7 @@ def get_json_bed(category, assembly):
     
     Args:
         category (str): Categoría de genes.
-        assembly (str): Versión de ensamblaje ("grch37" o "grch38").
+        assembly (str): Versión de ensamblaje ("37" o "38").
     
     Returns:
         None
@@ -134,10 +134,7 @@ def get_json_bed(category, assembly):
     os.chdir("/home/sagarruxki/")
     
     # CSV infile:
-    if category == 'rp':
-        in_csv = 'personal_risk_genes.csv'
-    elif category == 'rr':
-        in_csv = 'reproductivo_risk_genes.csv'
+    in_csv = category + '_risk_genes.csv'
     
     # Read CSV and store it in the dictionary
     genes_dct, genes_lst = read_csv(in_csv)

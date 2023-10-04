@@ -75,7 +75,7 @@ def check_inheritance(results, category):
                     inher = gene["inheritance"]
                           
                     # Si herencia es dominante (AD), semidominante o ligado al X, o si la categoría es RR, se informa la variante
-                    if inher in ['AD', 'SD', 'XL'] or category == 'RR':
+                    if inher in ['AD', 'SD', 'XL'] or category == 'rr':
                         # Combina la información de la variante y el gen
                         combined_info = combine_variant_and_gene_info(variant_info, gene)
                         # Agrega la información combinada a reported_variants
@@ -126,11 +126,11 @@ def write_report(pr_results, rr_results, fg_results, out_path):
     """
     try:
         for category in categories:
-            if category in ['PR', 'RR]':
+            if category in ['pr', 'rr]':
                 reported_results = check_inheritance(results, category)
                 #pr_final = check_diagnosis(pr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
                 results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
-                results_df.to_excel(out_path, sheet_name= category + ' results', index=True)
+                results_df.to_excel(out_path, sheet_name= category.upper() + ' results', index=True)
     
             else: #pendiente
                 fg_df = pd.DataFrame(fg_results)

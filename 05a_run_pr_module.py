@@ -105,18 +105,20 @@ def map_review_status(review_status):
     }
     return mapping.get(review_status.lower(), 0)  # Valor predeterminado es 0 si no se encuentra en el mapeo
 
-def run_clinvar_filtering(vcf_path, evidence_level, category, clinvar_path):
+def run_clinvar_filtering(evidence_level, clinvar_path):
     """
-    Filtra variantes del archivo VCF basado en datos de CLINVAR y un nivel de evidencia.
-    
+    Filtra variantes de la base de datos de CLINVAR según un nivel de evidencia dado.
+
     Args:
-        vcf_path (str): Ruta al archivo VCF de entrada.
-        evidence_level (int): Nivel de evidencia deseado.
-        category (str): Categoría de genes para la anotación.
-        clinvar_path (str): Ruta al archivo de base de datos de CLINVAR.
+        evidence_level (int): El nivel de evidencia deseado para filtrar las variantes.
+        clinvar_path (str): Ruta al archivo de la base de datos de CLINVAR.
+
+    Returns:
+        dict: Un diccionario que contiene las variantes filtradas de CLINVAR y su información relacionada,
+              organizadas por variantes.
     
     Raises:
-        Exception: Si ocurre un error durante el filtrado de variantes.
+        Exception: Si ocurre un error durante el filtrado de variantes de CLINVAR.
     """
     try:
                 
@@ -273,7 +275,7 @@ def run_personal_risk_module(vcf_path, assembly, mode, evidence_level, category,
     elif mode == "advanced":
         run_intervar(vcf_path, output_dir, category, assembly)
         intervar_results = parse_intervar_output(output_dir, category)
-        clinvar_dct = run_clinvar_filtering(vcf_path, evidence_level, category, clinvar_path)
+        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_path)
         combined_results = combine_results(vcf_path, category, intervar_results, clinvar_dct)
         write_combined_results_to_tsv(combined_results, output_tsv_path)
         return(combined_results)

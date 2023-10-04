@@ -26,7 +26,7 @@ def arguments():
                    help='Output path. Default current directory')
     
     # Argumento para el modo de análisis (básico o avanzado)
-    parser.add_argument('--mode', choices=['basic', 'advanced'], default='basic', help='Modo de análisis (basico o avanzado)')
+    parser.add_argument('--mode', choices=['basic', 'advanced'], default='basic', help='Modo de análisis (basic o advanced)')
     
     # Argumento para el nivel de evidencia (solo en modo avanzado)
     parser.add_argument('--evidence', type=int, choices=range(1, 5), default=1, help='Nivel de evidencia (1-4) en modo avanzado')
