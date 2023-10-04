@@ -88,7 +88,7 @@ def parse_intervar_output(vcf_path, category, mode):
                             "Orpha": orpha,
                             "GT": other_info
                         }
-       except Exception as e:
+    except Exception as e:
         raise Exception(f"Error al procesar la salida de InterVar: {e}")
 
     return intervar_results
@@ -296,7 +296,7 @@ def run_reproductive_risk_module(vcf_path, assembly, mode, evidence_level, categ
         #check_inheritance()
     elif mode == "advanced":
         run_intervar(vcf_path, output_dir, category, assembly)
-        intervar_results = parse_intervar_output(output_dir, category, mode)
+        intervar_results = parse_intervar_output(vcf_path, category, mode)
         clinvar_dct = run_clinvar_filtering(vcf_path, evidence_level, category, clinvar_path)
         combined_results = combine_results(vcf_path, category, intervar_results, clinvar_dct)
         write_combined_results_to_tsv(combined_results, vcf_path, category)
