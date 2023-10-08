@@ -81,7 +81,7 @@ def get_gene_pos(gene_symbol, assembly):
 
     return result
 
-def write_bed_file(assembly, genes_lst, category):
+def write_bed_file(assembly, genes_lst, category, dir_path):
     """
     Escribe información de genes en un archivo BED.
     
@@ -115,12 +115,12 @@ def write_bed_file(assembly, genes_lst, category):
         gene_coords.append((gene_pos['Chromosome'], int(gene_pos['Start']), int(gene_pos['End']), gene))
     sorted_coords = natsorted(gene_coords)
     
-    filename = f"{category}_genes_grch{assembly}.bed"
+    filename = f"{dir_path}{category}_genes_grch{assembly}.bed"
     with open(filename, "w") as bed_file:
         for chrom, start, end, gene in sorted_coords:
             bed_file.write(f"{chrom}\t{start}\t{end}\t{gene}\n")
 
-def get_json_bed(category, assembly):
+def get_json_bed(category, assembly, dir_path):
     """
     Función principal que procesa un archivo CSV y genera archivos JSON y BED.
     
@@ -131,10 +131,9 @@ def get_json_bed(category, assembly):
     Returns:
         None
     """
-    os.chdir("/home/sagarruxki/")
     
     # CSV infile:
-    in_csv = category + '_risk_genes.csv'
+    in_csv = dir_path + category + '_risk_genes.csv'
     
     # Read CSV and store it in the dictionary
     genes_dct, genes_lst = read_csv(in_csv)
@@ -145,4 +144,4 @@ def get_json_bed(category, assembly):
         json.dump(genes_dct, json_file, indent = 4)
     
     # Write BED files   
-    write_bed_file(assembly, genes_lst, category)
+    write_bed_file(assembly, genes_lst, category, dir_path)

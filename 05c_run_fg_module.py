@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Oct  3 18:15:14 2023
+Created on Sat Oct  7 11:21:45 2023
 
 @author: kindi
 """
-
 import subprocess
 import json
 import pysam
 import csv
 
 # Definir las funciones para cada módulo y opción
-def run_intervar(vcf_path, output_file, category, assembly):
+def annotate_fg_variants(config, output_file, assembly):
     """
     Ejecuta el programa Intervar para anotar variantes genéticas.
     
@@ -24,144 +23,145 @@ def run_intervar(vcf_path, output_file, category, assembly):
     Raises:
         subprocess.CalledProcessError: Si hay un error al ejecutar Intervar.
     """
-    try:
-        # Ruta vcf interseccion y directorio de salida
-        input_vcf = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
-        
-        # Construir el comando para ejecutar Intervar
-        cmd = [
-            "./InterVar/Intervar.py",
-            "-b", "hg19",# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
-            "-i", input_vcf,
-            "--input_type", "VCF",
-            "-o", output_file
-        ]
+    # Cargar archivo fg_json con variantes farmacogenéticas
+    fg_json_path = config['dir_path'] + 'fg_risk_variants_' + assembly + '.json'
+    with open(fg_json_path, 'r') as file:
+        fg_json = json.load(file)
 
-        # Ejecutar el comando y capturar la salida
-        # Cambiar el directorio de trabajo solo para el comando Intervar
-        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="./InterVar") as process:
-            output, _ = process.communicate()
+    annotated_variants = []
 
-    except subprocess.CalledProcessError as e:
-        print(f"Error al ejecutar InterVar: {e.output}")
-        
-def parse_intervar_output(vcf_path, category, mode):
-    """
-    Procesa el archivo de salida de InterVar y extrae los campos necesarios.
-
-    Args:
-        vcf_path (str): Ruta al archivo VCF de entrada.
-        category (str): Categoría de genes para la anotación.
-        mode (str): Modo de ejecución ("basico" o "avanzado").
-
-    Returns:
-        list: Una lista de diccionarios con los campos extraídos.
-    """
+    # Abrir el archivo VCF
+    vcf_path = config['vcf_path'].split('.vcf')[0] + '_fg_intersection.vcf' #cambiarlo, vcfpath no va a estar en config
     
-    #intervar_output_file = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
-    intervar_output_file = vcf_path.split('.hard-filtered')[0] + '_' + category + '.hg19_multianno.txt.intervar'
-    intervar_results = {}
+    with open(vcf_path, 'r') as vcf_file:
+    #with pysam.VariantFile(vcf_path) as vcf_file:
+        for line in vcf_file:
+            fields = line.split('\t')
+            variant_key = f"{fields[0]}:{fields[1]}:{fields[3]}:{fields[4]}"
+            #variant_key = f"{record.chrom}:{record.pos}:{record.ref}:{record.alts[0]}"
+            variant_info = fg_json['variants'].get(variant_key, None)
+
+            if variant_info:
+                annotated_variant = {
+                    "Variant": variant_key,
+                    "GT": fields[9].split(':')[0],
+                    "Gene": variant_info["gene_symbol"],
+                    "rs": variant_info["rs"]
+                }
+            else:
+                annotated_variant = {
+                    "Variant": variant_key,
+                    "GT": fields[9].split(':')[0],
+                    "Gene": "No encontrado",
+                    "rs": "No encontrado",
+                }
+
+            annotated_variants.append(annotated_variant)
+            
+            file = './annotated_variants.txt'
+            with open(file, 'w') as fout:
+                json.dump(annotated_variants, fout)
+            
+
+    return annotated_variants
+
+def assign_cyp2c9_diplotype(variants):
+    # Gen
+    gene = 'CYP2C9'
     
-    try:    
-        with open(intervar_output_file, "r") as intervar_file:
-            for line in intervar_file:
-                # Ignorar líneas que no son variantes
-                if not line.startswith("#"):
-                    fields = line.strip().split("\t")
-                    # Extraer los campos necesarios y formatearlos como se requiere
-                    variant = f"{fields[0]}:{fields[1]}:{fields[3]}:{fields[4]}"
-                    ref_gene = fields[8]
-                    avsnp = fields[9]
-                    #print(fields[13].split(":")[1].split("PVS")[0])
-                    classification = fields[13].split(": ")[1].split(" PVS")[0]
-                    orpha = fields[32]
-                    other_info = fields[-1]
+    # Flag para verificar si se encontró una variante en el gen objetivo
+    found = False
+    
+    variants_gene = {}
+    # Iterar a través de las variantes
+    for variant in variants:
+        if variant['Gene'] == gene:
+            found = True
+            variants_gene[variant['rs']] = variant['GT']
+            #break  # Se encontró una variante en el gen objetivo, así que puedes salir del bucle
+            
+    # Si no se encontró ninguna variante, diplotipo *1/*1
+    if found == False:
+        diplotype = '*1/*1'
+        
+    else:
+        if 'rs1799853' in variants_gene.keys():
+            if variants_gene['rs1799853'] == '1/1': # en realidad habría que comprobar si es len >1, porque puede que esté en fase con otro alelo
+                diplotype = '*2/*2'
+            else:
+                if len(variants_gene) == 1:
+                    diplotype = '*1/*2'
+                else:
+                    if 'rs1057910' in variants_gene.keys():
+                        diplotype = '*2/*3'
+                    else:
+                        print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+
+        elif 'rs1057910' in variants_gene.keys():
+            if variants_gene['rs1057910'] == '1/1':
+                diplotype = '*3/*3'
+            else:
+                if len(variants_gene) == 1:
+                    diplotype = '*1/*3'
+                else:
+                    print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+    return(diplotype)                    
+        
+def assign_cyp2c19_diplotype(variants):
+    # Gen
+    gene = 'CYP2C19'
+    
+    # Flag para verificar si se encontró una variante en el gen objetivo
+    found = False
+    
+    variants_gene = {}
+    # Iterar a través de las variantes
+    for variant in variants:
+        if variant['Gene'] == gene:
+            found = True
+            variants_gene[variant['rs']] = variant['GT']
+            #break  # Se encontró una variante en el gen objetivo, así que puedes salir del bucle
+            
+    # Si no se encontró ninguna variante, diplotipo *1/*1
+    if found == False or (len(variants_gene) == 1 and 'rs3758581' in variants_gene.keys()):
+        diplotype = '*1/*1'
+        
+    else:
+        if 'rs12769205' in variants_gene.keys() and 'rs4244285' in variants_gene.keys():
+            if variants_gene['rs12769205'] == '1/1'  and variants_gene['rs4244285'] == '1/1': # en realidad habría que comprobar si es len >2, porque puede que esté en fase con otro alelo
+                diplotype = '*2/*2'
+            else:
+                if len(variants_gene) == 2 or (len(variants_gene) == 3 and 'rs3758581' in variants_gene.keys()):
+                    diplotype = '*1/*2'
+                else:
+                    if 'rs4986893' in variants_gene.keys():
+                        diplotype = '*2/*3'
+                    elif 'rs12248560' in variants_gene.keys():
+                        diplotype = '*2/*17'
+                    else:
+                        print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                        
+        elif 'rs4986893' in variants_gene.keys():
+            if variants_gene['rs4986893'] == '1/1':
+                diplotype = '*3/*3'
+            else:
+                if len(variants_gene) == 1 or (len(variants_gene) == 2 and 'rs3758581' in variants_gene.keys()):
+                    diplotype = '*1/*3'
+                elif 'rs12248560' in variants_gene.keys():
+                    diplotype = '*3/*17'
+                else:
+                    print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
                     
-                    # Filtrar solo las variantes patogénicas y posiblemente patogénicas
-                    if classification in ["Pathogenic", "Likely pathogenic"] or mode == 'advanced':
-                    
-                        # Crear un diccionario con los campos extraídos
-                        intervar_results[variant] = {
-                            "Gene": ref_gene,
-                            "Rs": avsnp,
-                            "Classification": classification,
-                            "Orpha": orpha,
-                            "GT": other_info
-                        }
-    except Exception as e:
-        raise Exception(f"Error al procesar la salida de InterVar: {e}")
-
-    return intervar_results
-        
-def map_review_status(review_status):
-    """
-    Mapea el estado de revisión (review status) a un nivel de evidencia (evidence level) equivalente.
-    
-    Args:
-        review_status (str): Estado de revisión en texto.
-    
-    Returns:
-        int: Nivel de evidencia equivalente en número.
-    """
-    # Mapear "Review status" a número de estrellas
-    mapping = {
-        "practice guideline": 4,
-        "reviewed by expert panel": 3,
-        "criteria provided, multiple submitters, no conflicts": 2,
-        "criteria provided, conflicting interpretations": 1,
-        "criteria provided, single submitter": 1,
-        "no assertion for the individual variant": 0,
-        "no assertion criteria provided": 0,
-        "no assertion provided": 0
-    }
-    return mapping.get(review_status.lower(), 0)  # Valor predeterminado es 0 si no se encuentra en el mapeo
-
-def run_clinvar_filtering(evidence_level, clinvar_path):
-    """
-    Filtra variantes de la base de datos de CLINVAR según un nivel de evidencia dado.
-
-    Args:
-        evidence_level (int): El nivel de evidencia deseado para filtrar las variantes.
-        clinvar_path (str): Ruta al archivo de la base de datos de CLINVAR.
-
-    Returns:
-        dict: Un diccionario que contiene las variantes filtradas de CLINVAR y su información relacionada,
-              organizadas por variantes.
-    
-    Raises:
-        Exception: Si ocurre un error durante el filtrado de variantes de CLINVAR.
-    """
-    try:              
-        # Leer la base de datos de CLINVAR
-        clinvar_dct = {}  # Un diccionario para almacenar la información de CLINVAR
-        
-        with open(clinvar_path, "r") as db_file:
-            header = db_file.readline().strip().split("\t")
-            for line in open(clinvar_path):
-                line = line.rstrip()
-                if line == "":
-                    continue
-                fields = line.strip().split("\t")
-                variant = fields[9] + ":" + fields[14] + ":" + fields[15] + ":" + fields[16]
-                gene = fields[2]
-                clinical_significance = fields[3]
-                rs_id = fields[4]
-                review_status = fields[12]
-                stars = map_review_status(review_status)
-                if stars >= int(evidence_level):  
-                    clinvar_id = fields[5]
-                    clinvar_dct[variant] = {
-                        "Gene": gene,
-                        "ClinicalSignificance": clinical_significance,
-                        "rs": rs_id,
-                        "ReviewStatus": '(' + str(stars) + ') ' + review_status,
-                        "ClinvarID": clinvar_id
-                    }
-        
-        return(clinvar_dct)
-
-    except Exception as e:
-        print(f"Error al filtrar variantes: {e}")
+        # me falta el *17
+        elif 'rs12248560' in variants_gene.keys():
+            if variants_gene['rs12248560'] == '1/1':
+                diplotype = '*17/*17'
+            elif len(variants_gene) == 1 or (len(variants_gene) == 2 and 'rs3758581' in variants_gene.keys()):
+                diplotype = '*1/*17'
+            else:
+                print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                
+    return(diplotype) 
         
 def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     """
@@ -210,7 +210,7 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
                         #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
                         variant_int = f"{chrom}:{int(pos) + 1}:{ref[1:]}:-"
                     else:
-                        variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}
+                        variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':' + alt[1:]
                 else:
                     variant_int = f"{chrom}:{pos}:{ref}:{alt}"
                         

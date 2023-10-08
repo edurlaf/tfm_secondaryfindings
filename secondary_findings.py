@@ -22,9 +22,22 @@ Esta herramienta permite a los usuarios analizar archivos VCF para el manejo aut
 
 #import sys
 import os
+import json
 from myFunctions.functions import arguments, get_json_bed, get_json_bed_fg, get_clinvar, normalize_vcf, pr_module, rr_module, fg_module, write_report
 
 def main():
+    
+    """
+    Read config file
+    """
+    # Leer el archivo de configuración config.json
+    with open("./config.json", "r") as config_file:
+        config_data = json.load(config_file)
+    
+    # Obtener los valores del archivo de configuración
+    dir_path = config_data["dir_path"]
+       
+    
     """
     Get the arguments
     """
@@ -49,19 +62,19 @@ def main():
     """
     # Comprobar si los archivos JSON existen
     # Catálogo de riesgo personal
-    if not os.path.exists("/home/sagarruxki/pr_risk_genes.json"):
+    if not os.path.exists(dir_path + "pr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo personal.") # mejor dentro de la función get_json
-        get_json_bed("rp", assembly)
+        get_json_bed("rp", assembly, dir_path)
         
     # Catálogo de riesgo reproductivo
-    if not os.path.exists("/home/sagarruxki/rr_risk_genes.json"):
+    if not os.path.exists(dir_path + "rr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo reproductivo.") # mejor dentro de la función get_json
-        get_json_bed("rr", assembly)
+        get_json_bed("rr", assembly, dir_path)
         
     # Catálogo de riesgo farmacogenético
-    if not os.path.exists("/home/sagarruxki/fg_risk_genes.json"):
+    if not os.path.exists(dir_path + "fg_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo farmacogenético.") # mejor dentro de la función get_json
-        get_json_bed_fg(assembly)
+        get_json_bed_fg(assembly, dir_path)
         
     
     """
@@ -69,7 +82,7 @@ def main():
     """
     # Si el modo es avanzado, comprobar si se ha descargado la BD ClinVar
     if mode == 'advanced':
-        clinvar_files = [file for file in os.listdir("/home/sagarruxki/") if file.startswith("clinvar_database_")]
+        clinvar_files = [file for file in os.listdir(dir_path) if file.startswith("clinvar_database_")]
         
         # Si hay archivos clinvar, seleccionar el más reciente
         if clinvar_files:
@@ -77,7 +90,7 @@ def main():
             last_clinvar = clinvar_files[0]
 
             # Obtener la versión del nombre del archivo
-            last_version = last_clinvar.split('_')[2].split('.')[0]      
+            last_version = last_clinvar.split('_')[3].split('.')[0]      
             #print(f"El archivo ClinVar más reciente encontrado es {archivo_mas_reciente}.")
             print(f"La versión actual del archivo ClinVar es {last_version}.")
         
@@ -85,28 +98,28 @@ def main():
             answr = input("¿Deseas actualizarlo? (S/N): ")       
             if answr.lower() == "s":
                 # Descargar el archivo actualizado
-                get_clinvar()
+                get_clinvar(dir_path)
             else:
                 print("No se actualizará el archivo ClinVar.")
         # Si no se encuentran archivos ClinVar, descargarlo y guardarlo
         else:
             print("No se encontraron archivos ClinVar en el directorio.")
             print("El archivo ClinVar se descargará.")
-            get_clinvar()
+            get_clinvar(dir_path)
 
 
     """
     Comprobar dependencias?
     """
     # Comprobar si InterVar está en el path
-    if not os.path.exists("/home/sagarruxki/InterVar/"):
+    if not os.path.exists(dir_path + "InterVar/"):
         print("InterVar no está instalado. Por favor, instálalo para continuar.")
 
     
     """
     Normalizar VCF de entrada
     """
-    norm_vcf = normalize_vcf(vcf_file)
+    norm_vcf = normalize_vcf(vcf_file, dir_path)
     
     """
     Realizar la intersección con los archivos BED
@@ -121,17 +134,17 @@ def main():
     if "pr" in categories:
         # Ejecutar el módulo de riesgo personal (PR)
         print("Ejecutando módulo de riesgo personal...")
-        pr_results = pr_module(assembly, mode, evidence)
+        pr_results = run_personal_risk_module(vcf_path, assembly, mode, evidence, category, clinvar_path)
     
     if "rr" in categories:
         # Ejecutar el módulo de riesgo reproductivo (RR)
         print("Ejecutando módulo de riesgo reproductivo...")
-        rr_results = rr_module(assembly, mode, evidence)
+        rr_results = run_reproductive_risk_module(vcf_path, assembly, mode, evidence, category, clinvar_path)
         
     if "fg" in categories:
         # Ejecutar el módulo farmacogenético (FG)
         print("Ejecutando módulo farmacogenético...")
-        fg_results = fg_module(assembly)
+        fg_results = fg_module(assembly, dir_path)
     
     # Informar al usuario que los módulos han sido ejecutados
     print("Módulos de análisis completados.")

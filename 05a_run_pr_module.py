@@ -15,7 +15,7 @@ def run_intervar(vcf_path, output_file, category, assembly):
     Ejecuta el programa Intervar para anotar variantes genéticas.
     
     Args:
-        vcf_path (str): Ruta al archivo VCF de entrada.
+        vcf_path (str): Ruta al archivo VCF normalizado.
         output_file (str): Ruta al archivo de salida de Intervar.
         category (str): Categoría de genes para la anotación.
         assembly (str): Ensamblaje genómico a utilizar.
@@ -29,7 +29,7 @@ def run_intervar(vcf_path, output_file, category, assembly):
         
         # Construir el comando para ejecutar Intervar
         cmd = [
-            "/home/sagarruxki/InterVar/Intervar.py",
+            "./InterVar/Intervar.py",
             "-b", "hg19",# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
             "-i", input_vcf,
             "--input_type", "VCF",
@@ -38,7 +38,7 @@ def run_intervar(vcf_path, output_file, category, assembly):
 
         # Ejecutar el comando y capturar la salida
         # Cambiar el directorio de trabajo solo para el comando Intervar
-        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="/home/sagarruxki/InterVar") as process:
+        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="./InterVar") as process:
             output, _ = process.communicate()
 
     except subprocess.CalledProcessError as e:

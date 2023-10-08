@@ -61,7 +61,7 @@ def process_clinvar_data(assembly, release_date):
     
     return output_file
 
-def get_clinvar():
+def get_clinvar(dir_path):
     """
     Descarga y procesa los datos de la base de datos CLINVAR.
     """

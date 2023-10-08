@@ -8,11 +8,12 @@ import os
 import gzip
 import subprocess
 
-def normalize_vcf_with_bcftools(input_vcf_path):
+def normalize_vcf_with_bcftools(input_vcf_path, dir_path):
     # norm requiere el archivo input comprimido. opto por split multiallelic (-m -). si quisiéramos hacer left aligned, necesitamos un fasta de referencia
     try:
-        # Rutas de los archivos de entrada y salida
-        output_vcf_path = input_vcf_path.split(".vcf")[0] + "_normalized.vcf"
+        # Ruta del archivo de salida
+        #output_vcf_path = input_vcf_path.split(".vcf")[0] + "_normalized.vcf"
+        output_vcf_path = f"{dir_path}{input_vcf_path.split('/')[-1].split('.vcf')[0]}_normalized.vcf"
         
         # Verificar si el archivo VCF está comprimido
         if not input_vcf_path.endswith(".gz"):
