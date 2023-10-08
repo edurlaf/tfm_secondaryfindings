@@ -43,7 +43,7 @@ def combine_variant_and_gene_info(variant_info, gene_info):
     }
     return combined_info
 
-def check_inheritance(results, category):
+def check_inheritance(results, category, dir_path):
     """
     Comprueba la herencia de las variantes en función de la categoría de genes y genera un diccionario de variantes
     a informar según las reglas de herencia definidas en el archivo JSON de genes.
@@ -58,7 +58,7 @@ def check_inheritance(results, category):
 
     try:
         # Cargar el archivo JSON de categoría de genes    
-        genes_cat_path = '/home/sagarruxki/' + category + '_risk_genes.json'
+        genes_cat_path = dir_path + category + '_risk_genes.json'
         genes_cat = None
         with open(genes_cat_path, "r") as genes_cat_file:
             genes_cat = json.load(genes_cat_file)
@@ -114,7 +114,7 @@ def check_inheritance(results, category):
         return {}
                 
     
-def write_report(pr_results, rr_results, fg_results, out_path):
+def write_report(pr_results, rr_results, fg_results, out_path, dir_path):
     """
     Escribe los resultados de las categorías PR, RR y FG en un archivo Excel.
 
@@ -127,7 +127,7 @@ def write_report(pr_results, rr_results, fg_results, out_path):
     try:
         for category in categories:
             if category in ['pr', 'rr]':
-                reported_results = check_inheritance(results, category)
+                reported_results = check_inheritance(results, category, dir_path)
                 #pr_final = check_diagnosis(pr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
                 results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
                 results_df.to_excel(out_path, sheet_name= category.upper() + ' results', index=True)

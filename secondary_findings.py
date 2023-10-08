@@ -153,7 +153,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, out_path)
+    out_file = write_report(pr_results, rr_results, fg_results, out_path, dir_path)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     
