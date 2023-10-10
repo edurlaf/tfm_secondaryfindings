@@ -10,7 +10,7 @@ import pysam
 import csv
 
 # Definir las funciones para cada módulo y opción
-def annotate_fg_variants(dir_path, vcf_path, output_file, assembly):
+def annotate_fg_variants(dir_path, vcf_path, assembly):
     """
     Ejecuta el programa Intervar para anotar variantes genéticas.
     
@@ -244,7 +244,169 @@ def assign_dpyd_diplotype(variants):
                 else len(variants_gene) == 3:
                     print('Se han encontrado variantes en DPYD no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
     return(diplotype)  
+
+def assign_nudt15_diplotype(variants):
+    # Gen
+    gene = 'NUDT15'
+    
+    # Flag para verificar si se encontró una variante en el gen objetivo
+    found = False
+    
+    variants_gene = {}
+    # Iterar a través de las variantes
+    for variant in variants:
+        if variant['Gene'] == gene:
+            found = True
+            variants_gene[variant['rs']] = variant['GT']
+            #break  # Se encontró una variante en el gen objetivo, así que puedes salir del bucle
+            
+    # Si no se encontró ninguna variante, diplotipo *1/*1
+    if found == False:
+        diplotype = '*1/*1'
         
+    else:
+        # Chequear *2A:
+        if 'rs116855232' in variants_gene.keys():
+            if len(variants_gene) == 1:
+                if variants_gene['rs116855232'] == '1/1': # en realidad habría que comprobar si es len >1, porque puede que esté en fase con otro alelo
+                    diplotype = '*3/*3'
+                else:
+                    diplotype = '*1/*3'
+            elif len(variants_gene) == 2:
+                if 'rs746071566' in variants_gene.keys():
+                    if variants_gene['rs746071566'] == '1/1' and variants_gene['rs116855232'] == '1/1':
+                        diplotype = '*2/*2'
+                    elif variants_gene['rs746071566'] == '0/1' and variants_gene['rs116855232'] == '1/1': #hbaría que chequear variante si es inserción o del
+                        diplotype = '*2/*3'
+                    elif variants_gene['rs746071566'] == '0/1' and variants_gene['rs116855232'] == '0/1':
+                        diplotype = '*1/*2'
+                    else:
+                        print('Se han encontrado variantes en NUDT15 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                else:
+                    print('Se han encontrado variantes en NUDT15 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+            else:
+                print('Se han encontrado variantes en NUDT15 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+        else:
+            print('Se han encontrado variantes en NUDT15 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+    return(diplotype)  
+ 
+def assign_tpmt_diplotype(variants):
+    # Gen
+    gene = 'TPMT'
+    
+    # Flag para verificar si se encontró una variante en el gen objetivo
+    found = False
+    
+    variants_gene = {}
+    # Iterar a través de las variantes
+    for variant in variants:
+        if variant['Gene'] == gene:
+            found = True
+            variants_gene[variant['rs']] = variant['GT']
+            #break  # Se encontró una variante en el gen objetivo, así que puedes salir del bucle
+            
+    # Si no se encontró ninguna variante, diplotipo *1/*1
+    if found == False:
+        diplotype = '*1/*1'
+        
+    else:
+        # Chequear *2:
+        if 'rs1800462' in variants_gene.keys():
+            if variants_gene['rs1800462'] == '1/1': # en realidad habría que comprobar si es len >1, porque puede que esté en fase con otro alelo
+                diplotype = '*2/*2'
+            else:
+                if len(variants_gene) == 1:
+                    diplotype = '*1/*2'
+                elif len(variants_gene) == 2:
+                    if 'rs1800460' in variants_gene.keys():
+                        diplotype = '*2/*3B'
+                    elif 'rs1142345' in variants_gene.keys():
+                        diplotype = '*2/*3C'
+                    elif 'rs1800584' in variants_gene.keys():
+                        diplotype = '*2/*4'    
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                elif len(variants_gene) == 3:
+                    if 'rs1800460' in variants_gene.keys() and 'rs1142345' in variants_gene.keys():
+                        diplotype = '*2/*3A'
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                else:
+                    print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+
+        # Chequear *3B:
+        elif 'rs1800460' in variants_gene.keys():
+            if variants_gene['rs1800460'] == '1/1' and len(variants_gene) == 1:
+                diplotype = '*3B/*3B'
+            else:
+                if len(variants_gene) == 1:
+                    diplotype = '*1/*3B'
+                elif len(variants_gene) == 2:
+                    if 'rs1142345' in variants_gene.keys() and (variants_gene['rs1800460'] == '0/1') and (variants_gene['rs1142345'] == '0/1'):
+                        diplotype = '*1/*3A o *3B/*3C'
+                    elif 'rs1800584' in variants_gene.keys():
+                        diplotype = '*3B/*4' 
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                elif len(variants_gene) == 3:
+                    if 'rs1800460' in variants_gene.keys() and 'rs1142345' in variants_gene.keys():
+                        diplotype = '*3A/*3B'
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                else:
+                    print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                    
+        # Chequear *3C:
+        elif 'rs1142345' in variants_gene.keys():
+            if variants_gene['rs1142345'] == '1/1' and len(variants_gene) == 1:
+                diplotype = '*3C/*3C'
+            else:
+                if len(variants_gene) == 1:
+                    diplotype = '*1/*3C'
+                elif len(variants_gene) == 2:
+                    if 'rs1800584' in variants_gene.keys():
+                        diplotype = '*3C/*4'
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                elif len(variants_gene) == 3:
+                    if 'rs1800460' in variants_gene.keys() and 'rs1142345' in variants_gene.keys():
+                        diplotype = '*3A/*3B'
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                else:
+                    print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+
+        # Chequear *4:
+        elif 'rs1800584' in variants_gene.keys():
+            if variants_gene['rs1800584'] == '1/1' and len(variants_gene) == 1:
+                diplotype = '*4/*4'
+            else:
+                if len(variants_gene) == 1 and variants_gene['rs1800584'] == '0/1':
+                    diplotype = '*1/*4'
+                elif len(variants_gene) == 2:
+                    print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                elif len(variants_gene) == 3:
+                    if 'rs1800460' in variants_gene.keys() and 'rs1142345' in variants_gene.keys():
+                        diplotype = '*3A/*4'
+                    else:
+                        print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                else:
+                    print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+                    
+        # Chequear *3A:  IGUAL REORGANIZO TODO TPMT Y ESTO AL INICIO
+        elif 'rs1800460' in variants_gene.keys() and 'rs1142345' in variants_gene.keys():
+            if variants_gene['rs1800460'] == '1/1' and variants_gene['rs1142345'] == '1/1' and len(variants_gene) == 2:
+                diplotype = '*3A/*3A'
+            elif variants_gene['rs1800460'] == '1/1' and variants_gene['rs1142345'] == '0/1' and len(variants_gene) == 2:
+                diplotype = '*3A/*3B'
+            elif variants_gene['rs1800460'] == '0/1' and variants_gene['rs1142345'] == '1/1' and len(variants_gene) == 2:
+                diplotype = '*3A/*3C'
+            elif variants_gene['rs1800460'] == '0/1' and variants_gene['rs1142345'] == '0/1' and len(variants_gene) == 2:
+                diplotype = '*1/*3A o *3A/*3C'
+            else:
+                print('Se han encontrado variantes en TPMT no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+    return(diplotype)  
+       
 def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     """
     Combina los resultados de Intervar y ClinVar en una sola línea por variante.
