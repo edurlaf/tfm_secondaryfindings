@@ -114,7 +114,7 @@ def check_inheritance(results, category, dir_path):
         return {}
                 
     
-def write_report(pr_results, rr_results, fg_results, out_path, dir_path):
+def write_report(pr_results, rr_results, fg_results, haplot_results, out_path, dir_path):
     """
     Escribe los resultados de las categorías PR, RR y FG en un archivo Excel.
 
@@ -136,6 +136,8 @@ def write_report(pr_results, rr_results, fg_results, out_path, dir_path):
                 fg_df = pd.DataFrame(fg_results)
                 fg_df.to_excel(out_path, sheet_name='FG Results', index=False)
                 
+                haplot_df = pd.DataFrame(haplot_results)
+                haplot_df.to_excel(out_path, sheet_name='FG Diplotype-Phenotypes', index=False)
         print(f"Los resultados se han guardado en '{out_path}'.")
         
     except Exception as e:
