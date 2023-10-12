@@ -144,7 +144,7 @@ def main():
     if "fg" in categories:
         # Ejecutar el módulo farmacogenético (FG)
         print("Ejecutando módulo farmacogenético...")
-        fg_results = fg_module(assembly, dir_path)
+        fg_results, haplot_results = fg_module(dir_path, vcf_path, assembly)
     
     # Informar al usuario que los módulos han sido ejecutados
     print("Módulos de análisis completados.")
@@ -153,7 +153,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, out_path, dir_path)
+    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, out_path, dir_path)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     
