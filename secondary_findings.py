@@ -23,7 +23,17 @@ Esta herramienta permite a los usuarios analizar archivos VCF para el manejo aut
 #import sys
 import os
 import json
-from myFunctions.functions import arguments, get_json_bed, get_json_bed_fg, get_clinvar, normalize_vcf, pr_module, rr_module, fg_module, write_report
+
+from modules.arguments import arguments
+from modules.get_json_bed import read_csv, get_gene_pos, write_bed_file, get_json_bed
+from modules.get_json_bed_fg import generate_json_from_fg_csv, generate_bed_from_fg_csv, get_json_bed_fg
+from modules.get_clinvar import process_clinvar_data, get_clinvar
+from modules.normalize_vcf import normalize_vcf
+from modules.intersect_vcf_bed import intersect_vcf_with_bed
+from modules.run_pr_module
+from modules.run_rr_module
+from modules.run_fg_module
+from modules.write_report
 
 def main():
     
@@ -45,10 +55,10 @@ def main():
     
     # Argumentos del usuario
     vcf_file = args.vcf_file
-    out_path = args.outpath
+    out_path = args.out_path
     mode = args.mode
     evidence = args.evidence
-    assembly = args.assembly.lower()
+    assembly = str(args.assembly)
     
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
     categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ")
@@ -64,7 +74,7 @@ def main():
     # Catálogo de riesgo personal
     if not os.path.exists(dir_path + "pr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo personal.") # mejor dentro de la función get_json
-        get_json_bed("rp", assembly, dir_path)
+        get_json_bed("pr", assembly, dir_path)
         
     # Catálogo de riesgo reproductivo
     if not os.path.exists(dir_path + "rr_risk_genes.json"):
@@ -72,7 +82,7 @@ def main():
         get_json_bed("rr", assembly, dir_path)
         
     # Catálogo de riesgo farmacogenético
-    if not os.path.exists(dir_path + "fg_risk_genes.json"):
+    if not os.path.exists(dir_path + "fg_risk_variants" + assembly + ".json"):
         print("Generando archivos JSON y BED para riesgo farmacogenético.") # mejor dentro de la función get_json
         get_json_bed_fg(assembly, dir_path)
         
@@ -125,7 +135,7 @@ def main():
     Realizar la intersección con los archivos BED
     """
     for category in categories:
-        intersect_vcf_bed(norm_vcf, category, assembly)
+        intersect_vcf_with_bed(norm_vcf, category, assembly)
     
     """
     Ejecutar los módulos que correspondan:
