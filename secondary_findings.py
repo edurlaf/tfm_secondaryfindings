@@ -46,7 +46,19 @@ def main():
     
     # Obtener los valores del archivo de configuración
     dir_path = config_data["dir_path"]
-       
+    categories_path = config_data["categories_path"]
+    clinvar_path = config_data["clinvar_path"]
+    temp_path = config_data["temp_path"]
+    out_path = config_data["out_path"]
+    intervar_path = config_data["intervar_path"]
+
+    """ 
+    Create temp and final_output directories
+    """    
+    # Comprueba si los directorios 'temp' y 'final_output' existen y créalos si no.
+    for folder in [temp_path, out_path]:
+        if not os.path.exists(folder):
+            os.mkdir(folder)       
     
     """
     Get the arguments
@@ -55,13 +67,13 @@ def main():
     
     # Argumentos del usuario
     vcf_file = args.vcf_file
-    out_path = args.out_path
+    #out_path = args.out_path
     mode = args.mode
     evidence = args.evidence
     assembly = str(args.assembly)
     
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
-    categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ")
+    categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ") ####cambiar al config
     categories = [category.strip().lower() for category in categories_usr.split(",")]
  
     # habría que chequear el outpath?
@@ -72,19 +84,19 @@ def main():
     """
     # Comprobar si los archivos JSON existen
     # Catálogo de riesgo personal
-    if not os.path.exists(dir_path + "pr_risk_genes.json"):
+    if not os.path.exists(f"{categories_path}/PR/pr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo personal.") # mejor dentro de la función get_json
-        get_json_bed("pr", assembly, dir_path)
+        get_json_bed("pr", assembly, categories_path)
         
     # Catálogo de riesgo reproductivo
-    if not os.path.exists(dir_path + "rr_risk_genes.json"):
+    if not os.path.exists(f"{categories_path}/RR/rr_risk_genes.json"):
         print("Generando archivos JSON y BED para riesgo reproductivo.") # mejor dentro de la función get_json
-        get_json_bed("rr", assembly, dir_path)
+        get_json_bed("rr", assembly, categories_path)
         
     # Catálogo de riesgo farmacogenético
-    if not os.path.exists(dir_path + "fg_risk_variants" + assembly + ".json"):
+    if not os.path.exists(f"{categories_path}/FG/fg_risk_variants_grch{assembly}.json"):
         print("Generando archivos JSON y BED para riesgo farmacogenético.") # mejor dentro de la función get_json
-        get_json_bed_fg(assembly, dir_path)
+        get_json_bed_fg(assembly, categories_path)
         
     
     """
@@ -92,7 +104,7 @@ def main():
     """
     # Si el modo es avanzado, comprobar si se ha descargado la BD ClinVar
     if mode == 'advanced':
-        clinvar_files = [file for file in os.listdir(dir_path) if file.startswith("clinvar_database_")]
+        clinvar_files = [file for file in os.listdir(clinvar_path) if file.startswith("clinvar_database_")]
         
         # Si hay archivos clinvar, seleccionar el más reciente
         if clinvar_files:
@@ -108,34 +120,36 @@ def main():
             answr = input("¿Deseas actualizarlo? (S/N): ")       
             if answr.lower() == "s":
                 # Descargar el archivo actualizado
-                get_clinvar(dir_path)
+                clinvar_db = get_clinvar(clinvar_path)
             else:
                 print("No se actualizará el archivo ClinVar.")
+                clinvar_db = last_clinvar
         # Si no se encuentran archivos ClinVar, descargarlo y guardarlo
         else:
             print("No se encontraron archivos ClinVar en el directorio.")
             print("El archivo ClinVar se descargará.")
-            get_clinvar(dir_path)
-
+            clinvar_db = get_clinvar(clinvar_path)
+    else:
+        clinvar_db = None
 
     """
-    Comprobar dependencias?
+    Comprobar dependencias
     """
     # Comprobar si InterVar está en el path
-    if not os.path.exists(dir_path + "InterVar/"):
+    if not os.path.exists(intervar_path):
         print("InterVar no está instalado. Por favor, instálalo para continuar.")
 
     
     """
     Normalizar VCF de entrada
     """
-    norm_vcf = normalize_vcf(vcf_file, dir_path)
+    norm_vcf = normalize_vcf(vcf_file, temp_path)
     
     """
     Realizar la intersección con los archivos BED
     """
     for category in categories:
-        intersect_vcf_with_bed(norm_vcf, category, assembly)
+        intersect_vcf_with_bed(norm_vcf, category, assembly, categories_path)
     
     """
     Ejecutar los módulos que correspondan:
@@ -144,17 +158,17 @@ def main():
     if "pr" in categories:
         # Ejecutar el módulo de riesgo personal (PR)
         print("Ejecutando módulo de riesgo personal...")
-        pr_results = run_personal_risk_module(vcf_path, assembly, mode, evidence, category, clinvar_path)
+        pr_results = run_personal_risk_module(norm_vcf, assembly, mode, evidence, clinvar_db, categories_path, intervar_path)
     
     if "rr" in categories:
         # Ejecutar el módulo de riesgo reproductivo (RR)
         print("Ejecutando módulo de riesgo reproductivo...")
-        rr_results = run_reproductive_risk_module(vcf_path, assembly, mode, evidence, category, clinvar_path)
+        rr_results = run_reproductive_risk_module(norm_vcf, assembly, mode, evidence, clinvar_db, categories_path, intervar_path)
         
     if "fg" in categories:
         # Ejecutar el módulo farmacogenético (FG)
         print("Ejecutando módulo farmacogenético...")
-        fg_results, haplot_results = fg_module(dir_path, vcf_path, assembly)
+        fg_results, haplot_results = run_fg_module(categories_path, norm_vcf, assembly, temp_path)
     
     # Informar al usuario que los módulos han sido ejecutados
     print("Módulos de análisis completados.")
@@ -163,7 +177,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, out_path, dir_path)
+    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     

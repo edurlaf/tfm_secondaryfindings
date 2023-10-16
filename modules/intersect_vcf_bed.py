@@ -7,7 +7,7 @@ Created on Sat Aug 26 23:13:23 2023
 
 from pybedtools import BedTool
 
-def intersect_vcf_with_bed(vcf_path, category, assembly):
+def intersect_vcf_with_bed(norm_path, category, assembly, categories_path):
     """
     Intersecta un archivo VCF con un archivo BED y guarda las variantes intersectadas en un nuevo archivo VCF.
     
@@ -25,9 +25,9 @@ def intersect_vcf_with_bed(vcf_path, category, assembly):
     try:
         # Definir un diccionario de categorías a rutas de archivos BED
         category_to_bed = {
-            "pr": f"personal_genes_GRCh{assembly}.bed",
-            "rr": f"reproductivo_genes_GRCh{assembly}.bed",
-            "fg": f"farmacogenetico_variants_GRCh{assembly}.bed"
+            "pr": f"{categories_path}PR/pr_genes_grch{assembly}.bed",
+            "rr": f"{categories_path}RR/rr_genes_grch{assembly}.bed",
+            "fg": f"{categories_path}FG/fg_variants_grch{assembly}.bed"
         }
 
         # Verifica si la categoría es válida
@@ -37,10 +37,10 @@ def intersect_vcf_with_bed(vcf_path, category, assembly):
         
         # Obtener la ruta del archivo BED correspondiente y del archivo de salida
         bed_path = category_to_bed[category]
-        output_vcf_path = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
+        output_vcf_path = f"{norm_path.split('normalized')[0]}{category}_intersection.vcf"
             
         # Cargar el archivo VCF y el archivo BED utilizando pybedtools
-        vcf = BedTool(vcf_path)
+        vcf = BedTool(norm_path)
         bed = BedTool(bed_path)
         
         # Realizar la intersección utilizando pybedtools

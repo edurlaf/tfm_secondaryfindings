@@ -9,14 +9,15 @@ import json
 import pysam
 import csv
 
-def annotate_fg_variants(dir_path, vcf_path, assembly):
+def annotate_fg_variants(categories_path, norm_vcf, assembly, temp_path):
     """
     Anota variantes genéticas utilizando un archivo JSON de variantes farmacogenéticas.
     
     Args:
-        dir_path (str): Ruta al directorio que contiene archivos relacionados.
-        vcf_path (str): Ruta al archivo VCF de entrada.
+        categories_path (str): Ruta al directorio que contiene archivos relacionados con las categorías.
+        norm_vcf (str): Ruta al archivo VCF normalizado.
         assembly (str): Ensamblaje genómico a utilizar.
+        temp_path (str): Ruta al directorio que contiene archivos intermedios.
     
     Returns:
         list: Una lista de diccionarios que contienen los resultados de la anotación.
@@ -27,14 +28,14 @@ def annotate_fg_variants(dir_path, vcf_path, assembly):
 
     try:
         # Cargar archivo fg_json con variantes farmacogenéticas
-        fg_json_path = f'{dir_path}fg_risk_variants_{assembly}.json'
+        fg_json_path = f'{categories_path}FG/fg_risk_variants_{assembly}.json'
         with open(fg_json_path, 'r') as file:
             fg_json = json.load(file)
     
         annotated_variants = []
     
         # Abrir el archivo VCF
-        vcf_int_path = vcf_path.split('.vcf')[0] + '_fg_intersection.vcf'
+        vcf_int_path = norm_vcf.split('_normalized.vcf')[0] + '_fg_intersection.vcf'
         
         with open(vcf_int_path, 'r') as vcf_file:
         #with pysam.VariantFile(vcf_path) as vcf_file:
@@ -62,7 +63,7 @@ def annotate_fg_variants(dir_path, vcf_path, assembly):
                 annotated_variants.append(annotated_variant)
                 
         # Escribir los resultados en un archivo
-        result_file = f'{dir_path}/annotated_variants.txt'
+        result_file = f'{temp_path}/annotated_variants.txt'
         with open(result_file, 'w') as fout:
             json.dump(annotated_variants, fout)
                 
@@ -548,18 +549,18 @@ def assign_tpmt_diplotype(variants, diplo_pheno_dct, results):
 
     return results    
        
-def get_diplotype_phenotype_dictionary(dir_path):
+def get_diplotype_phenotype_dictionary(categories_path):
     """
     Obtener un diccionario de diplotipos con fenotipos y puntuaciones de actividad.
     
     Args:
-        dir_path (str): Ruta al directorio que contiene el archivo CSV.
+        categories_path (str): Ruta al directorio categories.
     
     Returns:
         dict: Un diccionario que asigna diplotipos con su información de fenotipo y puntuación de actividad.
     """
     # Nombre del archivo CSV
-    csv_file = f'{dir_path}diplotipo_fenotipo.csv'
+    csv_file = f'{categories_path}FG/diplotipo_fenotipo.csv'
     
     # Definir un diccionario para mapear los diplotipos con su fenotipo y Activity Score
     diplotype_data = {}
@@ -586,22 +587,24 @@ def get_diplotype_phenotype_dictionary(dir_path):
     return(diplotype_data)
 
     
-def run_pharmacogenomic_risk_module(dir_path, vcf_path, assembly): #sobra category, este modulo es especifico de rr
+def run_pharmacogenomic_risk_module(categories_path, norm_vcf, assembly, temp_path): #sobra category, este modulo es especifico de rr
     """
     Ejecuta el módulo de riesgo farmacogenético.
     
     Args:
-        dir_path (str)
-        vcf_path (str): Ruta al archivo VCF de entrada.
+        categories_path (str): Ruta al directorio categories.
+        norm_vcf (str): Ruta al archivo VCF dnormalizado.
         assembly (str): Ensamblaje genómico a utilizar.
+        temp_path (str): Rutal al directorio de archivos intermedios.
+        
     Returns:
         list: Una lista de diccionarios que contienen los resultados de los genes procesados.
     """
     # Anotar variantes fg presentes en el vcf
-    fg_results = annotate_fg_variants(dir_path, vcf_path, assembly)
+    fg_results = annotate_fg_variants(categories_path, norm_vcf, assembly, temp_path)
     
     # Crear diccionario con asociaciones diplotipo-fenotipo
-    diplo_pheno_dct = get_diplotype_phenotype_dictionary(dir_path)
+    diplo_pheno_dct = get_diplotype_phenotype_dictionary(categories_path)
     
     # Asignar los diplotipos de cada gen
     results = []

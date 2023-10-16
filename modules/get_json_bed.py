@@ -42,10 +42,10 @@ def read_csv(in_csv, category):
             gene_info = {
                 'gene_symbol': row['Gene'],
                 'phenotype': row['Phenotype'],
-                'ACMG_version': row['ACMG SF List Version'],
+                'ACMG_version': row.get('ACMG SF List Version', '') ,
                 'OMIM_disorder': row['OMIM Disorder'],
                 'inheritance': row['Inheritance'],
-                'variants_to_report': row['Variants to Report']
+                'variants_to_report': row.get('Variants to Report', '')
                 }
             genes_dct["genes"].append(gene_info)
             genes_lst.append(gene_symbol)
@@ -85,7 +85,7 @@ def get_gene_pos(gene_symbol, assembly):
 
     return result
 
-def write_bed_file(assembly, genes_lst, category, dir_path):
+def write_bed_file(assembly, genes_lst, category, categories_path):
     """
     Escribe información de genes en un archivo BED.
     
@@ -93,6 +93,7 @@ def write_bed_file(assembly, genes_lst, category, dir_path):
         assembly (str): Versión de ensamblaje ("37" o "38").
         genes_lst (list): Lista de símbolos de genes.
         category (str): Categoría de genes.
+        categories_path (str): Ruta al directorio categories.
     
     Returns:
         None
@@ -113,39 +114,39 @@ def write_bed_file(assembly, genes_lst, category, dir_path):
         if gene_pos['Chromosome'] == 'HG1439_PATCH': #revisar esto, que es una chapuza
             gene_pos['Chromosome'] = 'X'
         elif gene_pos['Chromosome'] == 'HSCHR6_MHC_MCF':
-            print('sale')
             gene_pos['Chromosome'] = '6'
         
         gene_coords.append((gene_pos['Chromosome'], int(gene_pos['Start']), int(gene_pos['End']), gene))
     sorted_coords = natsorted(gene_coords)
     
-    filename = f"{dir_path}{category}_genes_grch{assembly}.bed"
+    filename = f"{categories_path}{category.upper()}/{category}_genes_grch{assembly}.bed"
     with open(filename, "w") as bed_file:
         for chrom, start, end, gene in sorted_coords:
             bed_file.write(f"{chrom}\t{start}\t{end}\t{gene}\n")
 
-def get_json_bed(category, assembly, dir_path):
+def get_json_bed(category, assembly, categories_path):
     """
     Función principal que procesa un archivo CSV y genera archivos JSON y BED.
     
     Args:
         category (str): Categoría de genes.
         assembly (str): Versión de ensamblaje ("37" o "38").
-    
+        categories_path (str): Ruta al directorio categories.
+        
     Returns:
         None
     """
     
     # CSV infile:
-    in_csv = f"{dir_path}{category}_risk_genes.csv"
+    in_csv = f"{categories_path}{category.upper()}/{category}_risk_genes.csv"
     
     # Read CSV and store it in the dictionary
     genes_dct, genes_lst = read_csv(in_csv, category)
     
     # Write JSON file
-    out_json = f"{dir_path}{category}_risk_genes.json"
+    out_json = f"{categories_path}{category.upper()}/{category}_risk_genes.json"
     with open(out_json, 'w') as json_file:
         json.dump(genes_dct, json_file, indent = 4)
     
     # Write BED files   
-    write_bed_file(assembly, genes_lst, category, dir_path)
+    write_bed_file(assembly, genes_lst, category, categories_path)

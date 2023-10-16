@@ -11,13 +11,14 @@ import urllib.request
 from datetime import datetime
 import shutil
 
-def process_clinvar_data(assembly, release_date):
+def process_clinvar_data(assembly, release_date, clinvar_path):
     """
     Descarga y procesa los datos de CLINVAR para una versión de ensamblaje específica.
     
     Args:
         assembly (str): La versión de ensamblaje para la cual se desean los datos (por ejemplo, 'GRCh37' o 'GRCh38').
         release_date (datetime.datetime): La fecha de lanzamiento de los datos de CLINVAR.
+        clinvar_path: Ruta al directorio clinvar.
     
     Returns:
         str: El nombre del archivo de salida que contiene los datos procesados.
@@ -35,10 +36,10 @@ def process_clinvar_data(assembly, release_date):
                                  "ReferenceAlleleVCF", "AlternateAlleleVCF"]
     
     # Nombre del archivo de salida
-    output_file = f"clinvar_database_{assembly}_{release_date.strftime('%Y%m%d')}.txt"
+    output_file = f"{clinvar_path}clinvar_database_{assembly}_{release_date.strftime('%Y%m%d')}.txt"
     
     # Procesar el archivo CLINVAR
-    with gzip.open("variant_summary.txt.gz", "rt") as gz_file, open(output_file, "w") as output:
+    with gzip.open(f"{clinvar_path}variant_summary.txt.gz", "rt") as gz_file, open(output_file, "w") as output:
         csv_writer = csv.writer(output, delimiter="\t")
         header_line = gz_file.readline().strip()
         header_fields = header_line.split("\t")
@@ -61,9 +62,12 @@ def process_clinvar_data(assembly, release_date):
     
     return output_file
 
-def get_clinvar(dir_path):
+def get_clinvar(clinvar_path):
     """
     Descarga y procesa los datos de la base de datos CLINVAR.
+    
+    Args:
+        clinvar_path: Ruta al directorio clinvar.
     """
     try:        
         # URL del archivo CLINVAR
@@ -78,7 +82,7 @@ def get_clinvar(dir_path):
             return
         
         # Open a local file for writing in binary mode
-        out_rawfile = "./variant_summary.txt.gz"
+        out_rawfile = f"{clinvar_path}variant_summary.txt.gz"
         with open(out_rawfile, 'wb') as output_file:
             # Copy the response content to the local file
             shutil.copyfileobj(response, output_file)
@@ -101,12 +105,13 @@ def get_clinvar(dir_path):
         print(f"Archivo CLINVAR GRCh38 descargado y procesado. Versión: {release_date.strftime('%Y%m%d')}")
         
         # Eliminar el archivo descargado en formato gz
-        os.remove("variant_summary.txt.gz")
+        os.remove(f"{clinvar_path}variant_summary.txt.gz")
         
         # Eliminar versiones anteriores si existen
-        for filename in os.listdir():
+        for filename in os.listdir(clinvar_path):
             if filename.startswith("clinvar_database_") and filename.endswith(".txt") and filename != grch37_output_file and filename != grch38_output_file:
                 os.remove(filename)
-        
+        return(grch37_output_file)
+    
     except Exception as e:
         print(f"Ocurrió un error: {str(e)}")

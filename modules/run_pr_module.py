@@ -10,27 +10,31 @@ import pysam
 import csv
 
 # Definir las funciones para cada módulo y opción
-def run_intervar(vcf_path, output_file, category, assembly):
+def run_intervar(norm_vcf, category, assembly, intervar_path):
     """
     Ejecuta el programa Intervar para anotar variantes genéticas.
     
     Args:
-        vcf_path (str): Ruta al archivo VCF normalizado.
-        output_file (str): Ruta al archivo de salida de Intervar.
+        norm_vcf (str): Ruta al archivo VCF normalizado.
+        temp_path (str): La ruta al directorio temporal donde se guardarán los archivos intermedios.
         category (str): Categoría de genes para la anotación.
         assembly (str): Ensamblaje genómico a utilizar.
+        intervar_path (str): Ruta al directorio de InterVar.
     
     Raises:
         subprocess.CalledProcessError: Si hay un error al ejecutar Intervar.
     """
     try:
         # Ruta vcf interseccion y directorio de salida
-        input_vcf = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
+        input_vcf = f"{norm_vcf.split('normalized')[0]}{category}_intersection.vcf"
+        output_file = f"{norm_vcf.split('normalized')[0]}{category}"
         
+        if assembly == '37':
+            assembly_int = "hg19"
         # Construir el comando para ejecutar Intervar
         cmd = [
-            "./InterVar/Intervar.py",
-            "-b", "hg19",# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
+            f"{intervar_path}Intervar.py",
+            "-b", assembly_int,    #  no sé si se puede 38 en intervar
             "-i", input_vcf,
             "--input_type", "VCF",
             "-o", output_file
@@ -38,13 +42,14 @@ def run_intervar(vcf_path, output_file, category, assembly):
 
         # Ejecutar el comando y capturar la salida
         # Cambiar el directorio de trabajo solo para el comando Intervar
-        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="./InterVar") as process:
+        #with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="./InterVar") as process:
+        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True) as process:
             output, _ = process.communicate()
 
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar InterVar: {e.output}")
         
-def parse_intervar_output(vcf_path, category):
+def parse_intervar_output(norm_vcf, category):
     """
     Procesa el archivo de salida de InterVar y extrae los campos necesarios.
 
@@ -54,7 +59,7 @@ def parse_intervar_output(vcf_path, category):
     Returns:
         list: Una lista de diccionarios con los campos extraídos.
     """
-    intervar_output_file = vcf_path.split('.hard-filtered')[0] + '_' + category + '.hg19_multianno.txt.intervar'
+    intervar_output_file = f"{norm_vcf.split('.hard-filtered')[0]}_{category}.hg19_multianno.txt.intervar"
     intervar_results = {}
     
     with open(intervar_output_file, "r") as intervar_file:
@@ -66,7 +71,6 @@ def parse_intervar_output(vcf_path, category):
                 variant = f"{fields[0]}:{fields[1]}:{fields[3]}:{fields[4]}"
                 ref_gene = fields[8]
                 avsnp = fields[9]
-                #print(fields[13].split(":")[1].split("PVS")[0])
                 classification = fields[13].split(": ")[1].split(" PVS")[0]
                 orpha = fields[32]
                 other_info = fields[-1]
@@ -105,13 +109,13 @@ def map_review_status(review_status):
     }
     return mapping.get(review_status.lower(), 0)  # Valor predeterminado es 0 si no se encuentra en el mapeo
 
-def run_clinvar_filtering(evidence_level, clinvar_path):
+def run_clinvar_filtering(evidence_level, clinvar_db):
     """
     Filtra variantes de la base de datos de CLINVAR según un nivel de evidencia dado.
 
     Args:
         evidence_level (int): El nivel de evidencia deseado para filtrar las variantes.
-        clinvar_path (str): Ruta al archivo de la base de datos de CLINVAR.
+        clinvar_db (str): Ruta al archivo de la base de datos de CLINVAR.
 
     Returns:
         dict: Un diccionario que contiene las variantes filtradas de CLINVAR y su información relacionada,
@@ -125,9 +129,9 @@ def run_clinvar_filtering(evidence_level, clinvar_path):
         # Leer la base de datos de CLINVAR
         clinvar_dct = {}  # Un diccionario para almacenar la información de CLINVAR
         
-        with open(clinvar_path, "r") as db_file:
+        with open(clinvar_db, "r") as db_file:
             header = db_file.readline().strip().split("\t")
-            for line in open(clinvar_path):
+            for line in open(clinvar_db):
                 line = line.rstrip()
                 if line == "":
                     continue
@@ -167,20 +171,18 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     """
     combined_results = {}
     
-    # para compbinar los resultados de intervar y clinvar, aunque lo ideal sería recorrer
-    # las listas, intervar cambia la anotación, eliminando el nt de referencia en las idnels
+    # para combinar los resultados de intervar y clinvar, aunque lo ideal sería recorrer
+    # las listas, intervar cambia la anotación, eliminando el nt de referencia en las indels
     # por lo que no es posible encontrar esa variante en clinvar (no siempre hay rs disponible)
     # así que lo único que se me ocurre es recorrer el vcf de interseccion
     
 
 
     # Archivo VCF de intersección
-    vcf_path = vcf_norm.split('normalized')[0] + category + '_intersection.vcf'
+    vcf_path = f"{vcf_norm.split('normalized')[0]}{category}_intersection.vcf"
     
     # Abrir el archivo VCF de intersección
-    #with pysam.VariantFile(vcf_path, "r") as vcf_file:
     with open(vcf_path, "r") as vcf_file:
-        #for variant in vcf_file:
         # Recorrer el archivo línea por línea
         for line in vcf_file:
             fields = line.strip().split("\t")
@@ -196,9 +198,9 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
             if len(ref) > len(alt):
                 if len(alt) == 1:
                     #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
-                    variant_int = f"{chrom}:{int(pos) + 1}:{ref[1:]}:-"
+                    variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:-"
                 else:
-                    variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':' + alt[1:]
+                    variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}"
             else:
                 variant_int = f"{chrom}:{pos}:{ref}:{alt}"
                     
@@ -220,14 +222,16 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
                     "Orpha": intervar_info["Orpha"]
                 }
     
-def write_combined_results_to_tsv(combined_results, output_tsv):
+def write_combined_results_to_tsv(combined_results, norm_vcf, category):
     """
     Escribe los resultados combinados en un archivo TSV.
 
     Args:
         combined_results (list): Lista de diccionarios con los resultados combinados.
-        output_tsv (str): Ruta al archivo de salida TSV.
+        norm_vcf (str): Ruta al archivo normalizado.
+        category (str): Categoría de genes para la anotación.
     """
+    output_tsv = f"{norm_vcf.split('normalized')[0]}{category}_all_results.tsv"
     
     # Abrir el archivo TSV para escritura
     with open(output_tsv, "w", newline="") as tsv_file:
@@ -256,7 +260,7 @@ def write_combined_results_to_tsv(combined_results, output_tsv):
             writer.writerow(row)    
 
 
-def run_personal_risk_module(vcf_path, assembly, mode, evidence_level, category, clinvar_path):
+def run_personal_risk_module(norm_vcf, assembly, mode, evidence_level, clinvar_db, categories_path, intervar_path):
     """
     Ejecuta el módulo de riesgo personal según el modo seleccionado.
     
@@ -267,17 +271,18 @@ def run_personal_risk_module(vcf_path, assembly, mode, evidence_level, category,
         evidence_level (int): Nivel de evidencia deseado.
         category (str): Categoría de genes para la anotación.
     """
+    category = "pr"
     if mode == "basic":
-        run_intervar(vcf_path, output_dir, category, assembly)
-        intervar_results = parse_intervar_output(output_dir, category)
+        run_intervar(norm_vcf, category, assembly, intervar_path)
+        intervar_results = parse_intervar_output(norm_vcf, category)
         return(intervar_results)
 
     elif mode == "advanced":
-        run_intervar(vcf_path, output_dir, category, assembly)
-        intervar_results = parse_intervar_output(output_dir, category)
-        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_path)
-        combined_results = combine_results(vcf_path, category, intervar_results, clinvar_dct)
-        write_combined_results_to_tsv(combined_results, output_tsv_path)
+        run_intervar(norm_vcf, category, assembly, intervar_path)
+        intervar_results = parse_intervar_output(norm_vcf, category)
+        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db)
+        combined_results = combine_results(norm_vcf, category, intervar_results, clinvar_dct)
+        write_combined_results_to_tsv(combined_results, norm_vcf)
         return(combined_results)
 
     else:

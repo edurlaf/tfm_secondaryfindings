@@ -5,7 +5,7 @@ Created on Sat Aug 12 22:45:05 2023
 @author: kindi
 """
 """
-falta haer csv con assembly 38, y su bed y json correspondientes. También falta ver si funciona bien.
+falta hacer csv con assembly 38, y su bed y json correspondientes. También falta ver si funciona bien.
 """
 import os
 import csv
@@ -14,13 +14,14 @@ import json
 from natsort import natsorted
 
 
-def generate_json_from_fg_csv(csv_file, assembly, dir_path):
+def generate_json_from_fg_csv(csv_file, assembly, categories_path):
     """
     Genera un archivo JSON a partir de un archivo CSV de datos farmacogenéticos.
     
     Args:
         csv_file (str): Ruta al archivo CSV de entrada.
         assembly (str): Versión de ensamblaje (por ejemplo, "37").
+        categories_path: Ruta al directorio categories.
     
     Returns:
         None
@@ -30,7 +31,7 @@ def generate_json_from_fg_csv(csv_file, assembly, dir_path):
         
         # Create dictionary and gene list to store info
         variants_dct = {
-        "category": "Hallazgos secundarios de riesgo farmacogenético",
+        "category": "Hallazgos secundarios de riesgo farmacogenetico",
         "variants": {}
         }
         
@@ -60,59 +61,24 @@ def generate_json_from_fg_csv(csv_file, assembly, dir_path):
         
         #return(variants_dct, variants_lst)
             # Write JSON file
-            out_json = f'{dir_path}fg_risk_variants_{assembly}.json'
+            out_json = f'{categories_path}FG/fg_risk_variants_grch{assembly}.json'
             with open(out_json, 'w') as json_file:
                 json.dump(variants_dct, json_file, indent = 4)
     
-    # try:
-    #     with open(csv_file, 'r') as file:
-    #         csv_reader = csv.DictReader(file)
-    #         current_gene = None
-    
-    #         for row in csv_reader:
-    #             if current_gene != row['Gene']:
-    #                 if current_gene is not None:
-    #                     genes_data.append(gene_info)
-    #                 current_gene = row['Gene']
-    #                 gene_info = {
-    #                     "gene_symbol": current_gene,
-    #                     "variants": []
-    #                 }
-                
-    #             variant_info = {
-    #                 "chromosome": row['Chromosome'],
-    #                 "position": row['Position'],
-    #                 "reference": row['Reference'],
-    #                 "alternative": row['Alternative'],
-    #                 "dbSNP": row['dbSNP']
-    #             }
-    #             gene_info["variants"].append(variant_info)
-            
-    #         if current_gene is not None:
-    #             genes_data.append(gene_info)
-        
-    #     json_data = {
-    #         "category": "Hallazgos secundarios de riesgo farmacogenetico",
-    #         "genes": genes_data
-    #     }
-    
-    #     # Write JSON file
-    #     out_json = '/home/sagarruxki/farmacogenetico_risk_genes_' + assembly + '.json'
-    #     with open(out_json, 'w') as json_file:
-    #         json.dump(json_data, json_file, indent = 4)
         print(f"JSON file '{out_json}' generated successfully.")
     except FileNotFoundError:
         print(f"Error: File '{csv_file}' not found.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
-def generate_bed_from_fg_csv(csv_file, assembly):
+def generate_bed_from_fg_csv(csv_file, assembly, categories_path):
     """
     Genera un archivo BED a partir de un archivo CSV de datos farmacogenéticos.
     
     Args:
         csv_file (str): Ruta al archivo CSV de entrada.
         assembly (str): Versión de ensamblaje (por ejemplo, "37").
+        categories_path: Ruta al directorio categories.
     
     Returns:
         None
@@ -139,7 +105,7 @@ def generate_bed_from_fg_csv(csv_file, assembly):
         # Sort bed_data by chromosome, start position, end position, and allele
         sorted_bed_data = natsorted(bed_data)
         
-        bed_filename = f"farmacogenetico_variants_grch{assembly}.bed"
+        bed_filename = f"{categories_path}FG/fg_variants_grch{assembly}.bed"
         
         with open(bed_filename, "w") as bed_file:
             for entry in sorted_bed_data:
@@ -151,7 +117,7 @@ def generate_bed_from_fg_csv(csv_file, assembly):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
-def get_json_bed_fg(assembly, dir_path):
+def get_json_bed_fg(assembly, categories_path):
     """
     Función principal que procesa un archivo CSV de datos farmacogenéticos y genera archivos JSON y BED.
 
@@ -162,12 +128,12 @@ def get_json_bed_fg(assembly, dir_path):
         None
     """
     try:
-        csv_file = f"{dir_path}fg_risk_genes.csv"
-        generate_json_from_fg_csv(csv_file, assembly, dir_path)
+        csv_file = f"{categories_path}FG/fg_risk_genes.csv"
+        generate_json_from_fg_csv(csv_file, assembly, categories_path)
+        generate_bed_from_fg_csv(csv_file, assembly, categories_path)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
     
-    #assembly = "GRCh37"  # Replace with the appropriate assembly name
     
     
 
