@@ -107,10 +107,10 @@ def get_clinvar(clinvar_path):
         # Eliminar el archivo descargado en formato gz
         os.remove(f"{clinvar_path}variant_summary.txt.gz")
         
-        # Eliminar versiones anteriores si existen
-        for filename in os.listdir(clinvar_path):
-            if filename.startswith("clinvar_database_") and filename.endswith(".txt") and filename != grch37_output_file and filename != grch38_output_file:
-                os.remove(filename)
+        # # Eliminar versiones anteriores si existen
+        # for filename in os.listdir(clinvar_path):
+        #     if (filename.startswith("clinvar_database_") and filename.endswith(".txt")) and filename != grch37_output_file and filename != grch38_output_file:
+        #         os.remove(filename)
         return(grch37_output_file)
     
     except Exception as e:
