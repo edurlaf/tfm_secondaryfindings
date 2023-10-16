@@ -97,11 +97,11 @@ def get_clinvar(clinvar_path):
         release_date = datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z')
         
         # Procesar el archivo CLINVAR para GRCh37
-        grch37_output_file = process_clinvar_data("GRCh37", release_date)
+        grch37_output_file = process_clinvar_data("GRCh37", release_date, clinvar_path)
         print(f"Archivo CLINVAR GRCh37 descargado y procesado. Versión: {release_date.strftime('%Y%m%d')}")
         
         # Procesar el archivo CLINVAR para GRCh38
-        grch38_output_file = process_clinvar_data("GRCh38", release_date)
+        grch38_output_file = process_clinvar_data("GRCh38", release_date, clinvar_path)
         print(f"Archivo CLINVAR GRCh38 descargado y procesado. Versión: {release_date.strftime('%Y%m%d')}")
         
         # Eliminar el archivo descargado en formato gz
