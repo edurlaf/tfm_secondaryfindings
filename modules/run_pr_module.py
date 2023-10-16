@@ -8,6 +8,7 @@ import subprocess
 import json
 import pysam
 import csv
+import os
 
 # Definir las funciones para cada módulo y opción
 def run_intervar(norm_vcf, category, assembly, intervar_path):
@@ -26,14 +27,16 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
     """
     try:
         # Ruta vcf interseccion y directorio de salida
-        input_vcf = f"{norm_vcf.split('normalized')[0]}{category}_intersection.vcf"
-        output_file = f"{norm_vcf.split('normalized')[0]}{category}"
+        input_vcf = f".{norm_vcf.split('normalized')[0]}{category}_intersection.vcf"
+        output_file = f".{norm_vcf.split('normalized')[0]}{category}"
         
         if assembly == '37':
             assembly_int = "hg19"
         # Construir el comando para ejecutar Intervar
+        #intervar_file_path = os.path.join(intervar_path, "Intervar.py")
+        intervar_file_path = "./Intervar.py"
         cmd = [
-            f"{intervar_path}Intervar.py",
+            intervar_file_path,
             "-b", assembly_int,    #  no sé si se puede 38 en intervar
             "-i", input_vcf,
             "--input_type", "VCF",
@@ -43,23 +46,26 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
         # Ejecutar el comando y capturar la salida
         # Cambiar el directorio de trabajo solo para el comando Intervar
         #with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd="./InterVar") as process:
-        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True) as process:
+        with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True, cwd=intervar_path) as process:
+        #with subprocess.Popen(cmd, stderr=subprocess.STDOUT, text=True) as process:
             output, _ = process.communicate()
 
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar InterVar: {e.output}")
         
-def parse_intervar_output(norm_vcf, category):
+def parse_intervar_output(norm_vcf, category, mode):
     """
     Procesa el archivo de salida de InterVar y extrae los campos necesarios.
 
     Args:
-        intervar_output_file (str): Ruta al archivo de salida de InterVar.
+        norm_vcf (str): Ruta al archivo VCF de entrada.
+        category (str): Categoría de genes para la anotación.
+        mode (str)
 
     Returns:
         list: Una lista de diccionarios con los campos extraídos.
     """
-    intervar_output_file = f"{norm_vcf.split('.hard-filtered')[0]}_{category}.hg19_multianno.txt.intervar"
+    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.hg19_multianno.txt.intervar"
     intervar_results = {}
     
     with open(intervar_output_file, "r") as intervar_file:
@@ -75,14 +81,17 @@ def parse_intervar_output(norm_vcf, category):
                 orpha = fields[32]
                 other_info = fields[-1]
                 
-                # Crear un diccionario con los campos extraídos
-                intervar_results[variant] = {
-                    "Gene": ref_gene,
-                    "Rs": avsnp,
-                    "Classification": classification,
-                    "Orpha": orpha,
-                    "GT": other_info
-                }
+                # Filtrar solo las variantes patogénicas y posiblemente patogénicas
+                if classification in ["Pathogenic", "Likely pathogenic"] or mode == 'advanced':
+                
+                    # Crear un diccionario con los campos extraídos
+                    intervar_results[variant] = {
+                        "Gene": ref_gene,
+                        "Rs": avsnp,
+                        "Classification": classification,
+                        "Orpha": orpha,
+                        "GT": other_info
+                    }
 
     return intervar_results
         
@@ -274,12 +283,13 @@ def run_personal_risk_module(norm_vcf, assembly, mode, evidence_level, clinvar_d
     category = "pr"
     if mode == "basic":
         run_intervar(norm_vcf, category, assembly, intervar_path)
-        intervar_results = parse_intervar_output(norm_vcf, category)
+        intervar_results = parse_intervar_output(norm_vcf, category, mode)
+        #DEBERIA ESCRIBIR TAMBIEN ESTOS RESULTADSO
         return(intervar_results)
 
     elif mode == "advanced":
         run_intervar(norm_vcf, category, assembly, intervar_path)
-        intervar_results = parse_intervar_output(norm_vcf, category)
+        intervar_results = parse_intervar_output(norm_vcf, category, mode)
         clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db)
         combined_results = combine_results(norm_vcf, category, intervar_results, clinvar_dct)
         write_combined_results_to_tsv(combined_results, norm_vcf)

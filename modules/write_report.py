@@ -58,7 +58,7 @@ def check_inheritance(results, category, categories_path):
 
     try:
         # Cargar el archivo JSON de categoría de genes    
-        genes_cat_path = f"{categories_path}{category}/{category}_risk_genes.json"
+        genes_cat_path = f"{categories_path}{category.upper()}/{category}_risk_genes.json"
         genes_cat = None
         with open(genes_cat_path, "r") as genes_cat_file:
             genes_cat = json.load(genes_cat_file)
@@ -173,7 +173,7 @@ def check_diagnosis(user_hpos, reported_results):
 
     return matching_results
 
-def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path):
+def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories):
     """
     Escribe los resultados de las categorías PR, RR y FG en un archivo Excel.
 
@@ -185,25 +185,27 @@ def write_report(pr_results, rr_results, fg_results, haplot_results, categories_
     """
     try:
         outfile = f"{out_path}final_results.xlsx"
-        for category in categories:
-            if category == 'pr':
-                reported_results = check_inheritance(pr_results, category, categories_path)
-                #pr_final = check_diagnosis(pr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
-                results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
-                results_df.to_excel(outfile, sheet_name= category.upper() + ' results', index=True)
-                
-            elif category == 'rr':
-                reported_results = check_inheritance(rr_results, category, categories_path)
-                #rr_final = check_diagnosis(rr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
-                results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
-                results_df.to_excel(outfile, sheet_name= category.upper() + ' results', index=True)
-    
-            else:
-                fg_df = pd.DataFrame(fg_results)
-                fg_df.to_excel(outfile, sheet_name='FG results', index=False)
-                
-                haplot_df = pd.DataFrame(haplot_results)
-                haplot_df.to_excel(outfile, sheet_name='FG Diplotype-Phenotype', index=False)
+        # Crear un objeto ExcelWriter para el archivo Excel
+        with pd.ExcelWriter(outfile) as writer:
+            for category in categories:
+                if category == 'pr':
+                    reported_results = check_inheritance(pr_results, category, categories_path)
+                    #pr_final = check_diagnosis(pr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
+                    results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
+                    results_df.to_excel(writer, sheet_name= category.upper() + ' results', index=True)
+                    
+                elif category == 'rr':
+                    reported_results = check_inheritance(rr_results, category, categories_path)
+                    #rr_final = check_diagnosis(rr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
+                    results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
+                    results_df.to_excel(writer, sheet_name= category.upper() + ' results', index=True)
+        
+                else:
+                    fg_df = pd.DataFrame(fg_results)
+                    fg_df.to_excel(writer, sheet_name='FG results', index=False)
+                    
+                    haplot_df = pd.DataFrame(haplot_results)
+                    haplot_df.to_excel(writer, sheet_name='FG Diplotype-Phenotype', index=False)
                 
         print(f"Los resultados se han guardado en '{outfile}'.")
         

@@ -159,17 +159,23 @@ def main():
         # Ejecutar el módulo de riesgo personal (PR)
         print("Ejecutando módulo de riesgo personal...")
         pr_results = run_personal_risk_module(norm_vcf, assembly, mode, evidence, clinvar_db, categories_path, intervar_path)
-    
+    else:
+        pr_results = None
+        
     if "rr" in categories:
         # Ejecutar el módulo de riesgo reproductivo (RR)
         print("Ejecutando módulo de riesgo reproductivo...")
         rr_results = run_reproductive_risk_module(norm_vcf, assembly, mode, evidence, clinvar_db, categories_path, intervar_path)
+    else:
+        rr_results = None        
         
     if "fg" in categories:
         # Ejecutar el módulo farmacogenético (FG)
         print("Ejecutando módulo farmacogenético...")
-        fg_results, haplot_results = run_fg_module(categories_path, norm_vcf, assembly, temp_path)
-    
+        fg_results, haplot_results = run_pharmacogenomic_risk_module(categories_path, norm_vcf, assembly, temp_path)
+    else:
+        fg_results = None    
+        haplot_results = None
     # Informar al usuario que los módulos han sido ejecutados
     print("Módulos de análisis completados.")
     
@@ -177,7 +183,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path)
+    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     

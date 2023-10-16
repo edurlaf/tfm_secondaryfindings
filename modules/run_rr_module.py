@@ -26,12 +26,15 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
     """
     try:
         # Ruta vcf interseccion y directorio de salida
-        input_vcf = f"{norm_vcf.split('normalized')[0]}{category}_intersection.vcf"
-        output_file = f"{norm_vcf.split('normalized')[0]}{category}"
+        input_vcf = f".{norm_vcf.split('normalized')[0]}{category}_intersection.vcf"
+        output_file = f".{norm_vcf.split('normalized')[0]}{category}"
         
+        if assembly == '37':
+            assembly_int = "hg19"
         # Construir el comando para ejecutar Intervar
+        intervar_file_path = "./Intervar.py"
         cmd = [
-            "./InterVar/Intervar.py",
+            intervar_file_path,
             "-b", "hg19",# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
             "-i", input_vcf,
             "--input_type", "VCF",
@@ -46,20 +49,21 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar InterVar: {e.output}")
         
-def parse_intervar_output(norm_vcf, category):
+def parse_intervar_output(norm_vcf, category, mode):
     """
     Procesa el archivo de salida de InterVar y extrae los campos necesarios.
 
     Args:
         norm_vcf (str): Ruta al archivo VCF de entrada.
         category (str): Categoría de genes para la anotación.
+        mode (str)
 
     Returns:
         list: Una lista de diccionarios con los campos extraídos.
     """
     
     #intervar_output_file = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
-    intervar_output_file = f"{norm_vcf.split('.hard-filtered')[0]}_{category}.hg19_multianno.txt.intervar"
+    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.hg19_multianno.txt.intervar"
     intervar_results = {}
     
     try:    
@@ -288,7 +292,7 @@ def run_reproductive_risk_module(norm_vcf, assembly, mode, evidence_level, clinv
     category = "rr"
     if mode == "basic":
         run_intervar(norm_vcf, category, assembly, intervar_path)
-        intervar_results = parse_intervar_output(output_dir, category, mode)
+        intervar_results = parse_intervar_output(norm_vcf, category, mode)
         return(intervar_results)
 
     elif mode == "advanced":
