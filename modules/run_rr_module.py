@@ -119,13 +119,14 @@ def map_review_status(review_status):
     }
     return mapping.get(review_status.lower(), 0)  # Valor predeterminado es 0 si no se encuentra en el mapeo
 
-def run_clinvar_filtering(evidence_level, clinvar_db):
+def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
     """
     Filtra variantes de la base de datos de CLINVAR según un nivel de evidencia dado.
 
     Args:
         evidence_level (int): El nivel de evidencia deseado para filtrar las variantes.
         clinvar_db (str): Ruta al archivo de la base de datos de CLINVAR.
+        assembly (str):
 
     Returns:
         dict: Un diccionario que contiene las variantes filtradas de CLINVAR y su información relacionada,
@@ -134,13 +135,17 @@ def run_clinvar_filtering(evidence_level, clinvar_db):
     Raises:
         Exception: Si ocurre un error durante el filtrado de variantes de CLINVAR.
     """
-    try:              
+    try:
+        print(clinvar_db, assembly)
+        clinvar_path = f"{clinvar_db.split('GRCh')[0]}GRCh{assembly}_{clinvar_db.split('_')[-1]}"
+        print(clinvar_path)
         # Leer la base de datos de CLINVAR
         clinvar_dct = {}  # Un diccionario para almacenar la información de CLINVAR
         
-        with open(clinvar_db, "r") as db_file:
-            header = db_file.readline().strip().split("\t")
-            for line in open(clinvar_db):
+        with open(clinvar_path, "r") as db_file:
+            #header = db_file.readline().strip().split("\t")
+            #for line in open(clinvar_path):
+            for line in db_file:
                 line = line.rstrip()
                 if line == "":
                     continue
@@ -209,7 +214,7 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
                 if len(ref) > len(alt):
                     if len(alt) == 1:
                         #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
-                        variant_int = f"{chrom}:{int(pos) + 1}:{ref[1:]}:-"
+                        variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:-"
                     else:
                         variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}"
                 else:
@@ -219,19 +224,34 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
         
                 # Busca la variante en los resultados de ClinVar
                 clinvar_info = clinvar_dct.get(variant_key)
+                
+                if clinvar_info is not None:
     
-                # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
-                if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
-                    combined_results[variant_key] = {
-                        "Gene": clinvar_info["Gene"],
-                        "Genotype": intervar_info["GT"],
-                        "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
-                        "IntervarClassification": intervar_info["Classification"],
-                        "ClinvarClinicalSignificance": clinvar_info["ClinicalSignificance"],
-                        "ReviewStatus": clinvar_info["ReviewStatus"],
-                        "ClinvarID": clinvar_info["ClinvarID"],
-                        "Orpha": intervar_info["Orpha"]
-                }
+                    # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
+                        combined_results[variant_key] = {
+                            "Gene": clinvar_info["Gene"],
+                            "Genotype": intervar_info["GT"],
+                            "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
+                            "IntervarClassification": intervar_info["Classification"],
+                            "ClinvarClinicalSignificance": clinvar_info["ClinicalSignificance"],
+                            "ReviewStatus": clinvar_info["ReviewStatus"],
+                            "ClinvarID": clinvar_info["ClinvarID"],
+                            "Orpha": intervar_info["Orpha"]
+                        }
+                else:
+                    # Conserva la info de intervar si no hay info de clinvar
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]):
+                            combined_results[variant_key] = {
+                                "Gene": intervar_info["Gene"],
+                                "Genotype": intervar_info["GT"],
+                                "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
+                                "IntervarClassification": intervar_info["Classification"],
+                                "ClinvarClinicalSignificance": "NA",
+                                "ReviewStatus": "NA",
+                                "ClinvarID": "NA",
+                                "Orpha": intervar_info["Orpha"]
+                            }
     except Exception as e:
         raise Exception(f"Error al combinar resultados: {e}")
     
@@ -298,7 +318,7 @@ def run_reproductive_risk_module(norm_vcf, assembly, mode, evidence_level, clinv
     elif mode == "advanced":
         run_intervar(norm_vcf, category, assembly, intervar_path)
         intervar_results = parse_intervar_output(norm_vcf, category, mode)
-        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db)
+        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db, assembly)
         combined_results = combine_results(norm_vcf, category, intervar_results, clinvar_dct)
         write_combined_results_to_tsv(combined_results, norm_vcf, category)
         return(combined_results)

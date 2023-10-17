@@ -123,7 +123,7 @@ def main():
                 clinvar_db = get_clinvar(clinvar_path)
             else:
                 print("No se actualizará el archivo ClinVar.")
-                clinvar_db = last_clinvar
+                clinvar_db = f"{clinvar_path}{last_clinvar}"
         # Si no se encuentran archivos ClinVar, descargarlo y guardarlo
         else:
             print("No se encontraron archivos ClinVar en el directorio.")
@@ -183,7 +183,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories)
+    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     

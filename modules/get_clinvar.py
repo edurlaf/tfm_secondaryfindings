@@ -111,7 +111,7 @@ def get_clinvar(clinvar_path):
         # for filename in os.listdir(clinvar_path):
         #     if (filename.startswith("clinvar_database_") and filename.endswith(".txt")) and filename != grch37_output_file and filename != grch38_output_file:
         #         os.remove(filename)
-        return(grch37_output_file)
+        return(grch37_output_file) #si al final eintervar tamb funciona con genoma 38, cambiar esto en función del assembly
     
     except Exception as e:
         print(f"Ocurrió un error: {str(e)}")

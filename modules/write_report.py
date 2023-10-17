@@ -173,7 +173,7 @@ def check_diagnosis(user_hpos, reported_results):
 
     return matching_results
 
-def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories):
+def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file):
     """
     Escribe los resultados de las categorías PR, RR y FG en un archivo Excel.
 
@@ -184,7 +184,7 @@ def write_report(pr_results, rr_results, fg_results, haplot_results, categories_
         out_path (str): Ruta al archivo de salida.
     """
     try:
-        outfile = f"{out_path}final_results.xlsx"
+        outfile = f"{out_path}{vcf_file.split('/')[-1].split('.vcf')[0]}_final_results.xlsx"
         # Crear un objeto ExcelWriter para el archivo Excel
         with pd.ExcelWriter(outfile) as writer:
             for category in categories:

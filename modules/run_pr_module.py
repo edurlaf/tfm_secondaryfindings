@@ -17,7 +17,6 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
     
     Args:
         norm_vcf (str): Ruta al archivo VCF normalizado.
-        temp_path (str): La ruta al directorio temporal donde se guardarán los archivos intermedios.
         category (str): Categoría de genes para la anotación.
         assembly (str): Ensamblaje genómico a utilizar.
         intervar_path (str): Ruta al directorio de InterVar.
@@ -75,7 +74,7 @@ def parse_intervar_output(norm_vcf, category, mode):
                 fields = line.strip().split("\t")
                 # Extraer los campos necesarios y formatearlos como se requiere
                 variant = f"{fields[0]}:{fields[1]}:{fields[3]}:{fields[4]}"
-                ref_gene = fields[8]
+                ref_gene = fields[5]
                 avsnp = fields[9]
                 classification = fields[13].split(": ")[1].split(" PVS")[0]
                 orpha = fields[32]
@@ -118,7 +117,7 @@ def map_review_status(review_status):
     }
     return mapping.get(review_status.lower(), 0)  # Valor predeterminado es 0 si no se encuentra en el mapeo
 
-def run_clinvar_filtering(evidence_level, clinvar_db):
+def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
     """
     Filtra variantes de la base de datos de CLINVAR según un nivel de evidencia dado.
 
@@ -134,13 +133,16 @@ def run_clinvar_filtering(evidence_level, clinvar_db):
         Exception: Si ocurre un error durante el filtrado de variantes de CLINVAR.
     """
     try:
-                
+        print(clinvar_db, assembly)
+        clinvar_path = f"{clinvar_db.split('GRCh')[0]}GRCh{assembly}_{clinvar_db.split('_')[-1]}"
+        print(clinvar_path)
         # Leer la base de datos de CLINVAR
         clinvar_dct = {}  # Un diccionario para almacenar la información de CLINVAR
         
-        with open(clinvar_db, "r") as db_file:
-            header = db_file.readline().strip().split("\t")
-            for line in open(clinvar_db):
+        with open(clinvar_path, "r") as db_file:
+            #header = db_file.readline().strip().split("\t")
+            #for line in open(clinvar_path):
+            for line in db_file:
                 line = line.rstrip()
                 if line == "":
                     continue
@@ -160,7 +162,7 @@ def run_clinvar_filtering(evidence_level, clinvar_db):
                         "ReviewStatus": '(' + str(stars) + ') ' + review_status,
                         "ClinvarID": clinvar_id
                     }
-        
+        print(clinvar_dct)
         return(clinvar_dct)
 
     except Exception as e:
@@ -172,11 +174,13 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     Combina los resultados de Intervar y ClinVar en una sola línea por variante.
 
     Args:
-        intervar_results (list): Resultados de Intervar.
-        clinvar_db (dict): Base de datos de ClinVar.
+        vcf_norm (str): Ruta al archivo VCF normalizado.
+        category (str): Categoría de genes para la anotación.
+        intervar_results (dict): Resultados de Intervar.
+        clinvar_dct (dict): Base de datos de ClinVar.
 
     Returns:
-        list: Una lista de diccionarios con la información combinada.
+        dict: Un diccionario con los resultados combinados.
     """
     combined_results = {}
     
@@ -190,46 +194,68 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     # Archivo VCF de intersección
     vcf_path = f"{vcf_norm.split('normalized')[0]}{category}_intersection.vcf"
     
-    # Abrir el archivo VCF de intersección
-    with open(vcf_path, "r") as vcf_file:
-        # Recorrer el archivo línea por línea
-        for line in vcf_file:
-            fields = line.strip().split("\t")
-            chrom = fields[0]
-            pos = fields[1]
-            ref = fields[3]
-            alt = fields[4]  # Supongo una sola alternativa porque he splitteado los multiallelic sites
-    
-            # Construye la clave de búsqueda
-            variant_key = f"{chrom}:{pos}:{ref}:{alt}"
-    
-            # Busca la variante en los resultados de Intervar
-            if len(ref) > len(alt):
-                if len(alt) == 1:
-                    #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
-                    variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:-"
+    try:
+        # Abrir el archivo VCF de intersección
+        with open(vcf_path, "r") as vcf_file:
+            # Recorrer el archivo línea por línea
+            for line in vcf_file:
+                fields = line.strip().split("\t")
+                chrom = fields[0]
+                pos = fields[1]
+                ref = fields[3]
+                alt = fields[4]  # Supongo una sola alternativa porque he splitteado los multiallelic sites
+        
+                # Construye la clave de búsqueda
+                variant_key = f"{chrom}:{pos}:{ref}:{alt}"
+        
+                # Busca la variante en los resultados de Intervar
+                if len(ref) > len(alt):
+                    if len(alt) == 1:
+                        #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
+                        variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:-"
+                    else:
+                        variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}"
                 else:
-                    variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}"
-            else:
-                variant_int = f"{chrom}:{pos}:{ref}:{alt}"
-                    
-            intervar_info = intervar_results.get(variant_int)
-    
-            # Busca la variante en los resultados de ClinVar
-            clinvar_info = clinvar_dct.get(variant_key)
+                    variant_int = f"{chrom}:{pos}:{ref}:{alt}"
+                        
+                intervar_info = intervar_results.get(variant_int)
+        
+                # Busca la variante en los resultados de ClinVar
+                clinvar_info = clinvar_dct.get(variant_key)
 
-            # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
-            if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
-                combined_results[variant_key] = {
-                    "Gene": clinvar_info["Gene"],
-                    "Genotype": intervar_info["GT"],
-                    "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
-                    "IntervarClassification": intervar_info["Classification"],
-                    "ClinvarClinicalSignificance": clinvar_info["ClinicalSignificance"],
-                    "ReviewStatus": clinvar_info["ReviewStatus"],
-                    "ClinvarID": clinvar_info["ClinvarID"],
-                    "Orpha": intervar_info["Orpha"]
-                }
+                if clinvar_info is not None:
+    
+                    # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
+                            combined_results[variant_key] = {
+                                "Gene": clinvar_info["Gene"],
+                                "Genotype": intervar_info["GT"],
+                                "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
+                                "IntervarClassification": intervar_info["Classification"],
+                                "ClinvarClinicalSignificance": clinvar_info["ClinicalSignificance"],
+                                "ReviewStatus": clinvar_info["ReviewStatus"],
+                                "ClinvarID": clinvar_info["ClinvarID"],
+                                "Orpha": intervar_info["Orpha"]
+                            }
+                else:
+                    # Conserva la info de intervar si no hay info de clinvar
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]):
+                            combined_results[variant_key] = {
+                                "Gene": intervar_info["Gene"],
+                                "Genotype": intervar_info["GT"],
+                                "rs": intervar_info["Rs"] if intervar_info["Rs"] != '.' else clinvar_info["rs"],
+                                "IntervarClassification": intervar_info["Classification"],
+                                "ClinvarClinicalSignificance": "NA",
+                                "ReviewStatus": "NA",
+                                "ClinvarID": "NA",
+                                "Orpha": intervar_info["Orpha"]
+                            }
+
+    except Exception as e:
+        raise Exception(f"Error al combinar resultados: {e}")
+    
+    return(combined_results)
+    
     
 def write_combined_results_to_tsv(combined_results, norm_vcf, category):
     """
@@ -290,13 +316,13 @@ def run_personal_risk_module(norm_vcf, assembly, mode, evidence_level, clinvar_d
     elif mode == "advanced":
         run_intervar(norm_vcf, category, assembly, intervar_path)
         intervar_results = parse_intervar_output(norm_vcf, category, mode)
-        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db)
+        clinvar_dct = run_clinvar_filtering(evidence_level, clinvar_db, assembly)
         combined_results = combine_results(norm_vcf, category, intervar_results, clinvar_dct)
-        write_combined_results_to_tsv(combined_results, norm_vcf)
+        write_combined_results_to_tsv(combined_results, norm_vcf, category)
         return(combined_results)
 
     else:
         print("Modo no válido. Elija 'basic' o 'advanced'.")
-        
+        return(None)
     
 

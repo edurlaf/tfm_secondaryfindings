@@ -34,7 +34,7 @@ def normalize_vcf(input_vcf_path, temp_path):
                 subprocess.run(index_command, check=True)
         
         # Comando para normalizar con bcftools
-        bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-any", "--check-ref", "w", "-f", "./references_hs37d5_hs37d5.fa", "-o", output_vcf_path, "./input_vcf_example/NM769.01.hard-filtered.vcf"]
+        bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-any", "--check-ref", "w", "-f", "./references_hs37d5_hs37d5.fa", "-o", output_vcf_path, input_vcf_path]
 
         # Ejecutar el comando utilizando subprocess
         subprocess.run(bcftools_command, check=True)
