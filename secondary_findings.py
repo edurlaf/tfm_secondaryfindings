@@ -55,7 +55,7 @@ def main():
     """ 
     Create clinvar, temp and final_output directories
     """    
-    # Comprobar si los directorios 'clinvar', 'temp' y 'final_output' existen y crearlos si no.
+    # Comprobar si los directorios 'clinvar', 'temp' y 'final_output' existen y crearlos si no
     for folder in [clinvar_path, temp_path, out_path]:
         if not os.path.exists(folder):
             os.mkdir(folder)       
@@ -67,7 +67,6 @@ def main():
     
     # Argumentos del usuario
     vcf_file = args.vcf_file
-    #out_path = args.out_path
     mode = args.mode
     evidence = args.evidence
     assembly = str(args.assembly)

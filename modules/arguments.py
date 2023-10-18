@@ -20,11 +20,6 @@ def arguments():
     # Argumento para el archivo VCF
     parser.add_argument('vcf_file', metavar='VCF_FILE', type=str, help='Archivo VCF de entrada')
     
-    # Argumento para el arhivo de salida
-    parser.add_argument('-o', '--outpath', dest='out_path',
-                   action='store', required=False, default='',
-                   help='Output path. Default current directory')
-    
     # Argumento para el modo de análisis (básico o avanzado)
     parser.add_argument('--mode', choices=['basic', 'advanced'], default='basic', help='Modo de análisis (basic o advanced)')
     
