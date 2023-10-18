@@ -14,7 +14,7 @@ def arguments():
     """
     
     parser = argparse.ArgumentParser(description="Herramienta de análisis de hallazgos secundarios. \n\
-                                     \npython3 secondary_findings.py input_file.vcf -o <out-path-dir> --mode <Option: 'basic' or 'advanced'> --evidence <integer> --assembly <Option: '37' or '38'>\n \
+                                     \npython3 secondary_findings.py input_file.vcf --mode <Option: 'basic' or 'advanced'> --evidence <integer> --assembly <Option: '37' or '38'>\n \
                                      \nEXAMPLE: python3 secondary_findings.py example.vcf -o results --mode basic\n")
     
     # Argumento para el archivo VCF
