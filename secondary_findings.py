@@ -53,10 +53,10 @@ def main():
     intervar_path = config_data["intervar_path"]
 
     """ 
-    Create temp and final_output directories
+    Create clinvar, temp and final_output directories
     """    
-    # Comprueba si los directorios 'temp' y 'final_output' existen y créalos si no.
-    for folder in [temp_path, out_path]:
+    # Comprobar si los directorios 'clinvar', 'temp' y 'final_output' existen y crearlos si no.
+    for folder in [clinvar_path, temp_path, out_path]:
         if not os.path.exists(folder):
             os.mkdir(folder)       
     
@@ -75,8 +75,6 @@ def main():
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
     categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ") ####cambiar al config
     categories = [category.strip().lower() for category in categories_usr.split(",")]
- 
-    # habría que chequear el outpath?
     
     
     """
