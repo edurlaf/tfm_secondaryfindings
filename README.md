@@ -1,8 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
 # Secondary Findings Tool
 
 ## Overview
@@ -13,12 +8,6 @@ This repository contains a novel tool designed for the automated management of s
  * [Installation](#installation)
  * [Usage](#usage)
  * [Outputs](#outputs)
- * [Example](#example)
- * [Panel creation](#panel) 
- * [Data](#data)  
- * [Dependencies](#dependencies)
- * [Citation](#citation) 
- * [Version history](#versionhistory)
 
 
 ## <a name="installation">Installation</a>
