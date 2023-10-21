@@ -147,19 +147,17 @@ def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
                 if line == "":
                     continue
                 fields = line.strip().split("\t")
-                variant = fields[10] + ":" + fields[15] + ":" + fields[16] + ":" + fields[17]
+                variant = fields[9] + ":" + fields[14] + ":" + fields[15] + ":" + fields[16]
                 gene = fields[2]
                 clinical_significance = fields[3]
-                clinsigsimple = fields[4]
-                rs_id = fields[5]
-                review_status = fields[13]
+                rs_id = fields[4]
+                review_status = fields[12]
                 stars = map_review_status(review_status)
                 if stars >= int(evidence_level):  
-                    clinvar_id = fields[6]
+                    clinvar_id = fields[5]
                     clinvar_dct[variant] = {
                         "Gene": gene,
                         "ClinicalSignificance": clinical_significance,
-                        "AnyPorLP": clinsigsimple,
                         "rs": rs_id,
                         "ReviewStatus": '(' + str(stars) + ') ' + review_status,
                         "ClinvarID": clinvar_id
@@ -228,8 +226,7 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
                 if clinvar_info is not None:
     
                     # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
-                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic", "Conflicting interpretations of pathogenicity"
-]):
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
                             combined_results[variant_key] = {
                                 "Gene": clinvar_info["Gene"],
                                 "Genotype": intervar_info["GT"],
