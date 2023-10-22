@@ -162,7 +162,6 @@ def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
                         "ReviewStatus": '(' + str(stars) + ') ' + review_status,
                         "ClinvarID": clinvar_id
                     }
-        print(clinvar_dct)
         return(clinvar_dct)
 
     except Exception as e:

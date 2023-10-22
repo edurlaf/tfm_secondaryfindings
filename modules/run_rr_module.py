@@ -136,9 +136,8 @@ def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
         Exception: Si ocurre un error durante el filtrado de variantes de CLINVAR.
     """
     try:
-        print(clinvar_db, assembly)
         clinvar_path = f"{clinvar_db.split('GRCh')[0]}GRCh{assembly}_{clinvar_db.split('_')[-1]}"
-        print(clinvar_path)
+
         # Leer la base de datos de CLINVAR
         clinvar_dct = {}  # Un diccionario para almacenar la información de CLINVAR
         
@@ -150,26 +149,28 @@ def run_clinvar_filtering(evidence_level, clinvar_db, assembly):
                 if line == "":
                     continue
                 fields = line.strip().split("\t")
-                variant = f"{fields[9]}:{fields[14]}:{fields[15]}:{fields[16]}"
+                variant = f"{fields[10]}:{fields[15]}:{fields[16]}:{fields[17]}"
                 gene = fields[2]
                 clinical_significance = fields[3]
-                rs_id = fields[4]
-                review_status = fields[12]
+                clinsigsimple = fields[4]
+                rs_id = fields[5]
+                review_status = fields[13]
                 stars = map_review_status(review_status)
                 if stars >= int(evidence_level):  
-                    clinvar_id = fields[5]
+                    clinvar_id = fields[6]
                     clinvar_dct[variant] = {
                         "Gene": gene,
                         "ClinicalSignificance": clinical_significance,
+                        "ClinSigSimple": clinsigsimple,
                         "rs": rs_id,
                         "ReviewStatus": '(' + str(stars) + ') ' + review_status,
                         "ClinvarID": clinvar_id
                     }
-        
         return(clinvar_dct)
 
     except Exception as e:
         print(f"Error al filtrar variantes: {e}")
+   
         
 def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     """
@@ -184,9 +185,10 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
     Returns:
         dict: Un diccionario con los resultados combinados.
     """
+    #print(clinvar_dct)
     combined_results = {}
     
-    # para compbinar los resultados de intervar y clinvar, aunque lo ideal sería recorrer
+    # para combinar los resultados de intervar y clinvar, aunque lo ideal sería recorrer
     # las listas, intervar cambia la anotación, eliminando el nt de referencia en las idnels
     # por lo que no es posible encontrar esa variante en clinvar (no siempre hay rs disponible)
     # así que lo único que se me ocurre es recorrer el vcf de interseccion
@@ -211,12 +213,20 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
                 variant_key = f"{chrom}:{pos}:{ref}:{alt}"
         
                 # Busca la variante en los resultados de Intervar
+                # Si es una delecion
                 if len(ref) > len(alt):
                     if len(alt) == 1:
                         #variant_int = chrom + ':' + str(int(pos) + 1) + ':' + ref[1:] + ':-'
                         variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:-"
                     else:
                         variant_int = f"{chrom}:{str(int(pos) + 1)}:{ref[1:]}:{alt[1:]}"
+                # Si es una inserción
+                elif len(ref) < len(alt):
+                    if len(ref) == 1:
+                        variant_int = f"{chrom}:{pos}:-:{alt[1:]}"
+                    else:
+                        variant_int = f"{chrom}:{pos}:{ref[1:]}:{alt[1:]}"            
+                # Cambio de nt
                 else:
                     variant_int = f"{chrom}:{pos}:{ref}:{alt}"
                         
@@ -224,11 +234,13 @@ def combine_results(vcf_norm, category, intervar_results, clinvar_dct):
         
                 # Busca la variante en los resultados de ClinVar
                 clinvar_info = clinvar_dct.get(variant_key)
-                
+                #print(variant_key)
+                #print(clinvar_dct['17:4805974:T:TC'])
                 if clinvar_info is not None:
     
                     # Combina la información si es "Pathogenic" o "Likely pathogenic" en alguno de los dos
-                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
+                    #if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]):
+                    if (intervar_info and intervar_info["Classification"] in ["Pathogenic", "Likely pathogenic"]) or (clinvar_info and clinvar_info["ClinicalSignificance"] in ["Pathogenic", "Likely pathogenic"]) or ((clinvar_info and clinvar_info["ClinicalSignificance"].split(';')[0] == "Conflicting interpretations of pathogenicity") and (clinvar_info["ClinSigSimple"]=="1")):
                         combined_results[variant_key] = {
                             "Gene": clinvar_info["Gene"],
                             "Genotype": intervar_info["GT"],
@@ -297,7 +309,7 @@ def write_combined_results_to_tsv(combined_results, norm_vcf, category):
     except Exception as e:
         raise Exception(f"Error al escribir resultados en archivo TSV: {e}")
 
-def run_reproductive_risk_module(norm_vcf, assembly, mode, evidence_level, clinvar_db, categories_path, intervar_path): #sobra category, este modulo es especifico de rr
+def run_reproductive_risk_module(norm_vcf, assembly, mode, evidence_level, clinvar_db, categories_path, intervar_path):
     """
     Ejecuta el módulo de riesgo personal según el modo seleccionado.
     
