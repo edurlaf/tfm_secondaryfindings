@@ -31,7 +31,7 @@ def annotate_fg_variants(categories_path, norm_vcf, assembly, temp_path):
         fg_json_path = f'{categories_path}FG/fg_risk_variants_grch{assembly}.json'
         with open(fg_json_path, 'r') as file:
             fg_json = json.load(file)
-    
+
         annotated_variants = []
     
         # Abrir el archivo VCF
@@ -153,6 +153,7 @@ def assign_cyp2c9_diplotype(variants, diplo_pheno_dct, results):
                     if 'rs1057910' in variants_gene.keys():
                         diplotype = '*2/*3'
                     else:
+                        diplotype = 'NA'
                         print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
 
         elif 'rs1057910' in variants_gene.keys():
@@ -162,13 +163,20 @@ def assign_cyp2c9_diplotype(variants, diplo_pheno_dct, results):
                 if len(variants_gene) == 1:
                     diplotype = '*1/*3'
                 else:
+                    diplotype = 'NA'
                     print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
+        else:
+            diplotype = 'NA'
+            print('Se han encontrado variantes en CYP2C19 no consideradas en la asignación de haplotipos en esta herramienta. Revisar manualmente.')
 
     # Obtener el fenotipo y AS del diccionario               # esto se repite en todas las assign_diplotype, meter en una función   #contemplar qué hacer cuando no hay diplotipo asignado
     if gene in diplo_pheno_dct and diplotype in diplo_pheno_dct[gene]:
         data = diplo_pheno_dct[gene][diplotype]
         phenotype = data['Phenotype']
         activity_score = data['Activity_Score']
+    else:
+        phenotype = 'NA'
+        activity_score = 'NA'
 
     # Agregar los resultados a la lista de diccionarios
     results.append({
