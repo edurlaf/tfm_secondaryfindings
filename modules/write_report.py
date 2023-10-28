@@ -8,13 +8,6 @@ Created on Mon Sep 25 23:26:14 2023
 import json
 import pandas as pd
 
-
-# # Cargar el catálogo de genes de riesgo personal desde el archivo JSON
-# def load_json(json_file):
-#     with open(json_file, 'r') as file:
-#         gene_cat = json.load(file)
-#     return gene_cat
-
 def combine_variant_and_gene_info(variant_info, gene_info):
     """
     Combina la información de una variante y un gen.
@@ -39,7 +32,8 @@ def combine_variant_and_gene_info(variant_info, gene_info):
         "ACMG_version": gene_info.get("ACMG_version", ""),  # Usar get para manejar la falta de 'ACMG_version'
         "OMIM_disorder": gene_info["OMIM_disorder"],
         "inheritance": gene_info["inheritance"],
-        "variants_to_report": gene_info.get("variants_to_report", "")  # Usar get para manejar la falta de 'variants_to_report'
+        "variants_to_report": gene_info.get("variants_to_report", ""),  # Usar get para manejar la falta de 'variants_to_report'
+        "related_HPOs": 'NA'
     }
     return combined_info
 
@@ -113,67 +107,113 @@ def check_inheritance(results, category, categories_path):
         print(f"Error en check_inheritance: {str(e)}")
         return {}
  
-def get_hpo_dct(categories_path):
+# def get_hpo_dct(categories_path):
 
-    hpo_file = f"{categories_path}phenotype_to_genes.txt"
-    hpo_data = {}
-    # Abrir el archivo de texto en modo lectura
-    with open('hpo_file', 'r') as file:
-        # Salta la primera línea si contiene encabezados
-        next(file)
+#     hpo_file = f"{categories_path}phenotype_to_genes.txt"
+#     hpo_data = {}
+#     # Abrir el archivo de texto en modo lectura
+#     with open('hpo_file', 'r') as file:
+#         # Salta la primera línea si contiene encabezados
+#         next(file)
         
-        # Iterar a través de las líneas del archivo
-        for line in file:
-            # Dividir cada línea en columnas usando tabulaciones o espacios en blanco como delimitadores
-            fields = line.strip().split('\t')
+#         # Iterar a través de las líneas del archivo
+#         for line in file:
+#             # Dividir cada línea en columnas usando tabulaciones o espacios en blanco como delimitadores
+#             fields = line.strip().split('\t')
             
-            # Extraer los valores de cada columna
-            hpo_id, hpo_name, ncbi_gene_id, gene_symbol, disease_id = fields
+#             # Extraer los valores de cada columna
+#             hpo_id, hpo_name, ncbi_gene_id, gene_symbol, disease_id = fields
             
-            # Comprobar si el HPO ya está en el diccionario, y si no, crea un nuevo diccionario
-            if hpo_id not in hpo_data:
-                hpo_data[hpo_id] = {
-                    "hpo_name": hpo_name,
-                    "gene_info": []
-                }
+#             # Comprobar si el HPO ya está en el diccionario, y si no, crea un nuevo diccionario
+#             if hpo_id not in hpo_data:
+#                 hpo_data[hpo_id] = {
+#                     "hpo_name": hpo_name,
+#                     "gene_info": []
+#                 }
             
-            # Agrega información del gen y la enfermedad al diccionario correspondiente
-            hpo_data[hpo_id]["gene_info"].append({
-                "ncbi_gene_id": ncbi_gene_id,
-                "gene_symbol": gene_symbol,
-                "disease_id": disease_id
-            })
+#             # Agrega información del gen y la enfermedad al diccionario correspondiente
+#             hpo_data[hpo_id]["gene_info"].append({
+#                 "ncbi_gene_id": ncbi_gene_id,
+#                 "gene_symbol": gene_symbol,
+#                 "disease_id": disease_id
+#             })
                
-    return(hpo_data)
+#     return(hpo_data)
 
-def check_diagnosis(user_hpos, reported_results):
+def check_diagnosis(reported_results, hpos_user, categories_path):
     """
     Comprueba si los HPOs del usuario coinciden con los resultados reportados.
 
-    Args:
-        user_hpos (list): Lista de HPOs proporcionada por el usuario.
+    Args:        
         reported_results (dict): Resultados de diagnóstico reportados.
+        user_hpos (list): Lista de HPOs proporcionada por el usuario.
+        categories_path (str): Ruta al directorio categories.
 
     Returns:
         list: Lista de resultados coincidentes.
     """
-    matching_results = []
+    # Inicializar un diccionario vacío para almacenar los datos
+    gene_hpo_dict = {}
+    
+    # Abrir el archivo de texto para lectura
+    with open(f'{categories_path}genes_to_phenotype.txt', 'r') as file:
+        # Leer la primera línea (encabezado) para omitirla
+        next(file)
+        
+        # Iterar sobre las líneas del archivo
+        for line in file:
+            # Dividir cada línea en campos separadas por tabulaciones
+            fields = line.strip().split('\t')
+            gene_symbol = fields[1]
+            hpo_id = fields[2]
+            
+            # Si el gene_symbol ya está en el diccionario, agregar el hpo_id a la lista existente
+            if gene_symbol in gene_hpo_dict:
+                gene_hpo_dict[gene_symbol].append(hpo_id)
+            # Si el gene_symbol no está en el diccionario, crea una nueva entrada con una lista que contiene el hpo_id
+            else:
+                gene_hpo_dict[gene_symbol] = [hpo_id]
 
-    for hpo in user_hpos:
-        for result in reported_results[hpo]["gene_info"]:
-            # Comprueba si gene_symbol o disease_id coinciden con los del resultado
-            if (result["gene_symbol"] in user_hpos or result["disease_id"] in user_hpos):
-                matching_results.append({
-                    "hpo_id": hpo,
-                    "hpo_name": reported_results[hpo]["hpo_name"],
-                    "ncbi_gene_id": result["ncbi_gene_id"],
-                    "gene_symbol": result["gene_symbol"],
-                    "disease_id": result["disease_id"]
-                })
+    for result in reported_results:
+        # Comprueba si los hpos asociados al gen coinciden con los hpos del usuario
+        gene = reported_results[result]['Gene']
+        hpo_results = gene_hpo_dict[gene]
 
-    return matching_results
+        for hpo in hpo_results:
+            if hpo in hpos_user:
+                if reported_results[result]['related_HPOs'] == 'NA':
+                    reported_results[result]['related_HPOs'] = hpo #habria que mirar que hacer si hay mas de un hpo que coincide
+                else:
+                    reported_results[result]['related_HPOs'] += ', ' + hpo
+            
+    return reported_results
 
-def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file):
+def get_hpos_from_txt(hpos_file):
+    """
+    Lee un archivo de texto que contiene HPOs y devuelve una lista de HPOs.
+    
+    Args:
+        hpos_txt (str): Ruta al archivo de texto que contiene los HPOs, uno por línea.
+    
+    Returns:
+        List[str]: Lista de HPOs leídos del archivo.
+    
+    Raises:
+        FileNotFoundError: Si el archivo especificado no se encuentra.
+    """
+    if hpos_file is None:
+        return []  # Si no se proporciona un archivo, devolver una lista vacía
+
+    try:
+        with open(hpos_file, "r") as file:
+            hpos = [line.strip() for line in file.readlines()]
+        return hpos
+    
+    except FileNotFoundError:
+        print(f"El archivo {hpos_file} no se encontró.")
+        return []
+
+def write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file, hpos_txt):
     """
     Escribe los resultados de las categorías PR, RR y FG en un archivo Excel.
 
@@ -184,20 +224,22 @@ def write_report(pr_results, rr_results, fg_results, haplot_results, categories_
         out_path (str): Ruta al archivo de salida.
     """
     try:
+        # Obtener lista de HPOs
+        hpos_user = get_hpos_from_txt(hpos_txt)
         outfile = f"{out_path}{vcf_file.split('/')[-1].split('.vcf')[0]}_final_results.xlsx"
         # Crear un objeto ExcelWriter para el archivo Excel
         with pd.ExcelWriter(outfile) as writer:
             for category in categories:
                 if category == 'pr':
                     reported_results = check_inheritance(pr_results, category, categories_path)
-                    #pr_final = check_diagnosis(pr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
-                    results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
+                    pr_final = check_diagnosis(reported_results, hpos_user, categories_path)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
+                    results_df =  pd.DataFrame.from_dict(pr_final, orient='index')
                     results_df.to_excel(writer, sheet_name= category.upper() + ' results', index=True)
                     
                 elif category == 'rr':
                     reported_results = check_inheritance(rr_results, category, categories_path)
-                    #rr_final = check_diagnosis(rr_reported_results)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
-                    results_df =  pd.DataFrame.from_dict(reported_results, orient='index')
+                    rr_final = check_diagnosis(reported_results, hpos_user, categories_path)  # pendiente de desarrollar, warning si los términos orpha se corresponden con los hpo del paciente
+                    results_df =  pd.DataFrame.from_dict(rr_final, orient='index')
                     results_df.to_excel(writer, sheet_name= category.upper() + ' results', index=True)
         
                 else:

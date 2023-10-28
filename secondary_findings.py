@@ -33,7 +33,7 @@ from modules.intersect_vcf_bed import intersect_vcf_with_bed
 from modules.run_pr_module import run_intervar, parse_intervar_output, map_review_status, run_clinvar_filtering, combine_results, write_combined_results_to_tsv, run_personal_risk_module
 from modules.run_rr_module import run_reproductive_risk_module, run_intervar
 from modules.run_fg_module import annotate_fg_variants, check_gene_variants, assign_cyp2c9_diplotype, assign_cyp2c19_diplotype, assign_dpyd_diplotype, assign_nudt15_diplotype, assign_tpmt_diplotype, get_diplotype_phenotype_dictionary, run_pharmacogenomic_risk_module
-from modules.write_report import combine_variant_and_gene_info, check_inheritance, write_report
+from modules.write_report import combine_variant_and_gene_info, check_inheritance, check_diagnosis, get_hpos_from_txt, write_report
 
 def main():
     
@@ -70,6 +70,7 @@ def main():
     mode = args.mode
     evidence = args.evidence
     assembly = str(args.assembly)
+    hpos_txt = args.hpos_txt
     
     # Obtener la preferencia del usuario para las categorías a analizar (PR, RR, FG)
     categories_usr = input("Elija las categorías a analizar (PR, RR, FG separados por comas): ") ####cambiar al config
@@ -180,7 +181,7 @@ def main():
     """
     Generar el informe de salida
     """
-    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file)
+    out_file = write_report(pr_results, rr_results, fg_results, haplot_results, categories_path, out_path, categories, vcf_file, hpos_txt)
     print("Informe de resultados generado.\n ---Finalizado---")
 
     
