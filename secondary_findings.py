@@ -141,7 +141,7 @@ def main():
     """
     Normalizar VCF de entrada
     """
-    norm_vcf = normalize_vcf(vcf_file, temp_path)
+    norm_vcf = normalize_vcf(vcf_file, temp_path, assembly)
     
     """
     Realizar la intersección con los archivos BED

@@ -27,7 +27,7 @@ def arguments():
     parser.add_argument('--evidence', type=int, choices=range(1, 5), default=1, help='Nivel de evidencia (1-4) en modo avanzado')
     
     # Argumento para el genoma de referencia
-    parser.add_argument('--assembly', type=int, choices=['37', '38'], default='37', help='Genoma de referencia')
+    parser.add_argument('--assembly', type=int, choices=[37, 38], default=37, help='Genoma de referencia')
     
     # Argumento para el archivo de texto de HPOs
     parser.add_argument("--hpos_txt", default=None, help="Archivo de texto que contiene la lista de HPOs")

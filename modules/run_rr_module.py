@@ -31,11 +31,14 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
         
         if assembly == '37':
             assembly_int = "hg19"
+        elif assembly == '38':
+            assembly_int = 'hg38'
+            
         # Construir el comando para ejecutar Intervar
         intervar_file_path = "./Intervar.py"
         cmd = [
             intervar_file_path,
-            "-b", "hg19",# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
+            "-b", assembly_int,# assembly en clinvar es 37, aqui 19. decidir .   además no sé si se puede 38 en intervar
             "-i", input_vcf,
             "--input_type", "VCF",
             "-o", output_file
@@ -63,7 +66,7 @@ def parse_intervar_output(norm_vcf, category, mode):
     """
     
     #intervar_output_file = vcf_path.split("normalized")[0] + category + "_intersection.vcf"
-    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.hg19_multianno.txt.intervar"
+    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.{assembly_int}_multianno.txt.intervar"
     intervar_results = {}
     
     try:    

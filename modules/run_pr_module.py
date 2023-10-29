@@ -31,6 +31,9 @@ def run_intervar(norm_vcf, category, assembly, intervar_path):
         
         if assembly == '37':
             assembly_int = "hg19"
+        elif assembly == '38':
+            assembly_int = 'hg38'
+            
         # Construir el comando para ejecutar Intervar
         #intervar_file_path = os.path.join(intervar_path, "Intervar.py")
         intervar_file_path = "./Intervar.py"
@@ -64,7 +67,7 @@ def parse_intervar_output(norm_vcf, category, mode):
     Returns:
         list: Una lista de diccionarios con los campos extraídos.
     """
-    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.hg19_multianno.txt.intervar"
+    intervar_output_file = f"{norm_vcf.split('normalized')[0]}{category}.{assembly_int}_multianno.txt.intervar"
     intervar_results = {}
     
     with open(intervar_output_file, "r") as intervar_file:

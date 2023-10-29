@@ -69,7 +69,7 @@ After running the tool, you will find various output files that summarize the an
 2. **Intermediate Outputs** (in the "temp" directory):
     * **normalized.vcf**: This file stores the results after the normalization process of the input VCF file.
     * **intersection.vcf**: It contains the findings after the intersection of VCF data with predefined BED files for each category.
-    * **multianno.intervar: You can locate the outcomes of the InterVar tool's analysis here.
+    * **multianno.intervar**: You can locate the outcomes of the InterVar tool's analysis here.
     * **all_results.csv**: In this CSV file, you will find all pathogenic (P) or likely pathogenic (LP) variants before filtering based on inheritance rules.
 
 

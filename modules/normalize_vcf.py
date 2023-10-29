@@ -8,7 +8,7 @@ import os
 import gzip
 import subprocess
 
-def normalize_vcf(input_vcf_path, temp_path):
+def normalize_vcf(input_vcf_path, temp_path, assembly):
     """
     Normaliza un archivo VCF de entrada utilizando bcftools.
     
@@ -34,7 +34,10 @@ def normalize_vcf(input_vcf_path, temp_path):
                 subprocess.run(index_command, check=True)
         
         # Comando para normalizar con bcftools
-        bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-any", "--check-ref", "w", "-f", "./references_hs37d5_hs37d5.fa", "-o", output_vcf_path, input_vcf_path]
+        if assembly == '37':
+            bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-any", "--check-ref", "w", "-f", "./references_hs37d5_hs37d5.fa", "-o", output_vcf_path, input_vcf_path]
+        elif assembly == '38':
+            bcftools_command = ["bcftools", "norm", "-O", "v", "-m", "-any", "--check-ref", "w", "-f", "./Homo_sapiens.GRCh38.dna.primary_assembly.fa", "-o", output_vcf_path, input_vcf_path]
 
         # Ejecutar el comando utilizando subprocess
         subprocess.run(bcftools_command, check=True)

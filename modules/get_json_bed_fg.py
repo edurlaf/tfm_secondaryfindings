@@ -128,7 +128,7 @@ def get_json_bed_fg(assembly, categories_path):
         None
     """
     try:
-        csv_file = f"{categories_path}FG/fg_risk_genes.csv"
+        csv_file = f"{categories_path}FG/fg_risk_genes_GRCh{assembly}.csv"
         generate_json_from_fg_csv(csv_file, assembly, categories_path)
         generate_bed_from_fg_csv(csv_file, assembly, categories_path)
     except Exception as e:
